@@ -31,7 +31,7 @@ const Home = () => {
     setOpenAddEditModal({ isShown: true, data: noteDetails, type: 'edit' });
   };
 
-  const showToastMessage = (messageType) => {
+  const showToastMessage = (message, type) => {
     setShowToastMsg({
       isShown: true,
       message,
@@ -46,7 +46,7 @@ const Home = () => {
     });
   };
 
-  // Get user info
+  // GET USER INFO
   const getUserInfo = async () => {
     try {
       const response = await axiosInstance.get("/get-user");
@@ -60,7 +60,7 @@ const Home = () => {
     }
   };
 
-  // Get all notes
+  // GET ALL NOTES
   const getAllNotes = async () => {
     try {
       const response = await axiosInstance.get("/get-all-notes");
@@ -73,6 +73,22 @@ const Home = () => {
     }
   }
 
+  // DELETE NOTES
+  const deleteNote = async (data) => {
+    const noteId = data._id;
+
+    try {
+      const response = await axiosInstance.delete("/delete-note/" + noteId);
+
+      if (response.data && !response.data.error) {
+        showToastMessage("Note has been deleted", 'delete');
+        getAllNotes();
+      }
+    } catch (error) {
+      console.log("An unexpected error occurred. Please try again.");
+    }
+  }
+  
   useEffect(() => {
     getAllNotes();
     getUserInfo();
@@ -84,7 +100,7 @@ const Home = () => {
       <Navbar userInfo={userInfo} />
 
       <div className='container mx-auto'>
-        <div className='grid grid-cols-3 gap-4 mt-8'>
+{        <div className='grid grid-cols-3 gap-4 mt-8'>
           {allNotes.map((item, index) => (
             <NoteCard 
               key={item._id}
@@ -94,11 +110,11 @@ const Home = () => {
               tags={item.tags}
               isPinned={item.isPinned}
               onEdit={() => handleEdit(item)}
-              onDelete={() => {}}
+              onDelete={() => deleteNote(item)}
               onPinNote={() => {}}
             />
           ))}
-        </div>
+        </div>}
       </div>
 
       <button 
@@ -127,6 +143,7 @@ const Home = () => {
             setOpenAddEditModal({ isShown: false, type: "add", data: null });
           }}
           getAllNotes={getAllNotes}
+          showToastMessage={showToastMessage}
         />
       </Modal>
 
