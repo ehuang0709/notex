@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 
 // Backend API
 
-// create account
+// CREATE ACCOUNT
 app.post("/create-account", async (req, res) => {
     const { fullName, email, password } = req.body;
 
@@ -71,7 +71,7 @@ app.post("/create-account", async (req, res) => {
     });
 });
 
-// login
+// LOGIN
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -109,7 +109,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
-// get user
+// GET USER
 app.get("/get-user", authenticateToken, async (req, res) => {
     const { user } = req.user;
 
@@ -130,7 +130,7 @@ app.get("/get-user", authenticateToken, async (req, res) => {
     });
 });
 
-// add note
+// ADD NOTE
 app.post("/add-note", authenticateToken, async (req, res) => {
     const { title, content, tags } = req.body;
     const { user } = req.user;
@@ -163,7 +163,7 @@ app.post("/add-note", authenticateToken, async (req, res) => {
     }
 });
 
-// edit note, PUT may be better for editing notes than POST
+// EDIT NOTE, PUT may be better for editing notes than POST
 app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
     const noteId = req.params.noteId;
     const { title, content, tags, isPinned } = req.body;
@@ -200,7 +200,7 @@ app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
     }
 });
 
-// get all notes
+// GET ALL NOTES
 app.get("/get-all-notes/", authenticateToken, async (req, res) => {
     const { user } = req.user;
 
@@ -212,7 +212,7 @@ app.get("/get-all-notes/", authenticateToken, async (req, res) => {
     }
 });
 
-// delete notes
+// DELETE NOTE
 app.delete("/delete-note/:noteId", authenticateToken, async (req, res) => {
     const noteId = req.params.noteId;
     const { user } = req.user;
@@ -232,7 +232,7 @@ app.delete("/delete-note/:noteId", authenticateToken, async (req, res) => {
     } 
 });
 
-// update note pin (isPinned)
+// UPDATE NOTE PIN (isPinned)
 app.put("/update-note-pinned/:noteId", authenticateToken, async (req, res) => {
     const noteId = req.params.noteId;
     const { isPinned } = req.body;
@@ -262,7 +262,37 @@ app.put("/update-note-pinned/:noteId", authenticateToken, async (req, res) => {
     }
 });
 
+// SEARCH NOTES
+app.get("/search-notes/", authenticateToken, async (req, res) => {
+    const { user } = req.user;
+    const { query } = req.query;
 
+    if (!query) {
+        return res.status(400).json({ error: true, message: "Search query is required"})
+    }
+
+    try {
+        const matchingNotes = await Note.find({ 
+            userId: user._id, 
+            $or: [
+                { title: { $regex: new RegExp(query, "i") } },
+                { content: { $regex: new RegExp(query, "i") } },
+            ],
+        });
+
+        return res.json({
+            error: false, 
+            notes: matchingNotes, 
+            message: "Notes matching the search query retrieved successfully",
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error",
+        });
+    }
+});
 
 app.listen(8000);
 
