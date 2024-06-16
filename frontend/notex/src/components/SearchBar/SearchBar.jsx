@@ -31,12 +31,10 @@ const SearchBar = ({ value, onChange, handleSearch, onClearSearch }) => {
         />
       )}
 
-      <div className='p-2 rounded-full hover:bg-gray-200'>
-        <FaMagnifyingGlass 
-          className='text-slate-500 cursor-pointer' 
-          onClick={handleSearch} 
-        />
-      </div>
+      <FaMagnifyingGlass 
+        className='text-slate-500 cursor-pointer hover:text-black' 
+        onClick={handleSearch} 
+      />
     </div>
   )
 }
