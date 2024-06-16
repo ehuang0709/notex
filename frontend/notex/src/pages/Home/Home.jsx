@@ -25,8 +25,8 @@ const Home = () => {
 
   const [allNotes, setAllNotes] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
-
   const [isSearch, setIsSearch] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -65,6 +65,7 @@ const Home = () => {
 
   // GET ALL NOTES
   const getAllNotes = async () => {
+    setLoading(true);
     try {
       const response = await axiosInstance.get("/get-all-notes");
 
@@ -73,6 +74,8 @@ const Home = () => {
       }
     } catch (error) {
       console.log("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,6 +97,7 @@ const Home = () => {
 
   // SEARCH FOR NOTE
   const onSearchNote = async (query) => {
+    setLoading(true);
     try {
       const response = await axiosInstance.get("/search-notes", {
         params: { query },
@@ -105,6 +109,8 @@ const Home = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -145,29 +151,40 @@ const Home = () => {
       />
 
       <div className='container mx-auto'>
-        {allNotes.length > 0 ? (
-          <div className='grid grid-cols-3 gap-4 mt-8'>
-            {allNotes.map((item, index) => (
-              <NoteCard 
-                key={item._id}
-                title={item.title} 
-                date={item.createdOn}
-                content={item.content}
-                tags={item.tags}
-                isPinned={item.isPinned}
-                onEdit={() => handleEdit(item)}
-                onDelete={() => deleteNote(item)}
-                onPinNote={() => updateIsPinned(item)}
-              />
-            ))}
-          </div> ) : (
+        {loading ? (
+          <div></div>
+        ) : (
+          allNotes.length > 0 ? (
+            <div className='grid grid-cols-3 gap-4 mt-8 mx-12'>
+              {allNotes.map((item) => (
+                <NoteCard 
+                  key={item._id}
+                  title={item.title} 
+                  date={item.createdOn}
+                  content={item.content}
+                  tags={item.tags}
+                  isPinned={item.isPinned}
+                  onEdit={() => handleEdit(item)}
+                  onDelete={() => deleteNote(item)}
+                  onPinNote={() => updateIsPinned(item)}
+                />
+              ))}
+            </div> 
+          ) : (
             <EmptyCard 
-              message={
+              message1={
                 isSearch 
                   ? 'Oops! No notes found matching your search.' 
-                  : `Start creating your first note! Click the 'Add' button to jot down your thoughts, ideas, and reminders. Let's get started!`}
+                  : `Start creating your first note!`
+              }
+              message2={
+                isSearch 
+                  ? 'Please edit your search query or create a new note.' 
+                  : `Click the 'Add' button to jot down your thoughts, ideas, and reminders. Let's get started!`
+              }
             />
-          )}
+          )
+        )}
       </div>
 
       <button 
