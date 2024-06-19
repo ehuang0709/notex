@@ -9,12 +9,13 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
 
   const onLogout = () => {
     localStorage.clear();
-    navigate("/login");
+    navigate("/login/");
   };
 
   const handleSearch = () => {
     if (searchQuery) {
       onSearchNote(searchQuery);
+      navigate(`/dashboard/?q=${encodeURIComponent(searchQuery)}`); 
     }
   };
 
@@ -23,9 +24,13 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
     handleClearSearch();
   };
 
+  const onClickNotex = () => {
+    window.location.href = '/dashboard/';
+  }
+
   return (
     <div className='bg-white flex items-center justify-between px-6 py-2 drop-shadow'>
-        <h2 className='text-xl font-medium text-black py-2'>NOTEX</h2>
+        <h2 className='text-xl font-medium text-black py-2 cursor-pointer' onClick={onClickNotex}>NOTEX</h2>
 
         <SearchBar 
           value={searchQuery}

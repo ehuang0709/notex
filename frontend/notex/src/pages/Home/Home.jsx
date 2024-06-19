@@ -4,7 +4,7 @@ import NoteCard from '../../components/Cards/NoteCard'
 import { MdAdd } from "react-icons/md"
 import AddEditNotes from './AddEditNotes'
 import Modal from "react-modal"
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import axiosInstance from '../../utils/axiosInstance'
 import Toast from '../../components/ToastMessage/Toast'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
@@ -34,6 +34,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleEdit = (noteDetails) => {
     setOpenAddEditModal({ isShown: true, data: noteDetails, type: 'edit' });
@@ -135,6 +136,7 @@ const Home = () => {
 
   const handleClearSearch = () => {
     setIsSearch(false);
+    navigate(`/dashboard/`);
     getAllNotes();
   };
 
@@ -156,8 +158,19 @@ const Home = () => {
   }
 
   useEffect(() => {
-    getAllNotes();
+    // Check if there is a query parameter in the URL and perform search if present
+    const queryParams = new URLSearchParams(location.search);
+    const query = queryParams.get('query');
+
+    if (query) {
+      onSearchNote(query);
+      setIsSearch(true);
+    } else {
+      getAllNotes();
+    }
+
     getUserInfo();
+
     return () => {};
   }, []);
 
