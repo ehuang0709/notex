@@ -15,7 +15,8 @@ const Toast = ({ isShown, message, type, onClose }) => {
 
   return (
     <div className={`absolute top-20 right-6 transition-all duration-400 ${
-      isShown ? 'opacity-100' : 'opacity-0'}`}>
+      isShown ? 'opacity-100' : 'opacity-0 '}`}
+      style={{ zIndex: isShown ? 1000 : -1 }}>
       <div className={`min-w-52 bg-white border shadow-2xl rounded-md after:w-[5px] after:h-full ${
         type === 'delete' ? 'after:bg-red-500' : 'after:bg-green-500'}
         after:absolute after:left-0 after:top-0 after:rounded-l-lg`}>

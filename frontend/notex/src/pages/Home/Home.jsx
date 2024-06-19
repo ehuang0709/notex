@@ -23,6 +23,11 @@ const Home = () => {
     type: "add",
   });
 
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState({
+    isShown: false,
+    note: null,
+  });
+
   const [allNotes, setAllNotes] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
@@ -80,9 +85,7 @@ const Home = () => {
   };
 
   // DELETE NOTES
-  const deleteNote = async (data) => {
-    const noteId = data._id;
-
+  const deleteNote = async (noteId) => {
     try {
       const response = await axiosInstance.delete("/delete-note/" + noteId);
 
@@ -135,7 +138,24 @@ const Home = () => {
     setIsSearch(false);
     getAllNotes();
   };
-  
+
+  const closeAddEditModal = () => {
+    setOpenAddEditModal({ isShown: false })
+  }
+
+  const handleDeleteClick = (note) => {
+    setShowConfirmDeleteModal({ isShown: true, note });
+  };
+
+  const confirmDelete = () => {
+    deleteNote(deleteModal.note._id);
+    setShowConfirmDeleteModal({ isShown: false, note: null });
+  }
+
+  const cancelDelete = () => {
+    setShowConfirmDeleteModal({ isShown: false, note: null });
+  }
+
   useEffect(() => {
     getAllNotes();
     getUserInfo();
@@ -165,7 +185,7 @@ const Home = () => {
                   tags={item.tags}
                   isPinned={item.isPinned}
                   onEdit={() => handleEdit(item)}
-                  onDelete={() => deleteNote(item)}
+                  onDelete={() => handleDeleteClick(item)}
                   onPinNote={() => updateIsPinned(item)}
                 />
               ))}
@@ -188,7 +208,7 @@ const Home = () => {
       </div>
 
       <button 
-        className='w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10' 
+        className='w-16 h-16 flex items-center justify-center rounded-full bg-primary hover:bg-blue-600 absolute right-10 bottom-10' 
         onClick={() => {
           setOpenAddEditModal({ isShown: true, type: "add", data: null });
         }}
@@ -198,14 +218,14 @@ const Home = () => {
 
       <Modal
         isOpen={openAddEditModal.isShown}
-        onRequestClose={() => {}}
+        onRequestClose={closeAddEditModal}
         style={{
           overlay: {
             backgroundColor: "rgba(0,0,0,0.2)",
           },
         }}
         contentLabel=""
-        className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden"
+        className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden transition-all"
       ><AddEditNotes
           type={openAddEditModal.type}
           noteData={openAddEditModal.data}
@@ -215,6 +235,42 @@ const Home = () => {
           getAllNotes={getAllNotes}
           showToastMessage={showToastMessage}
         />
+      </Modal>
+
+      <Modal
+        isOpen={showConfirmDeleteModal.isShown}
+        onRequestClose={cancelDelete}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.2)",
+          },
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            transform: 'translate(-50%, -50%)',
+            width: '30%',
+            padding: '20px',
+          },
+        }}
+        contentLabel='Confirm Delete'
+      >
+        <h2>Are you sure you want to delete this note?</h2>
+        <div className="flex justify-end mt-4">
+          <button
+            className="bg-gray-200 px-4 py-2 rounded mr-2"
+            onClick={cancelDelete}
+          >
+            Cancel
+          </button>
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded"
+            onClick={confirmDelete}
+          >
+            Delete
+          </button>
+        </div>
       </Modal>
 
       <Toast
