@@ -126,7 +126,6 @@ const Home = () => {
       });
 
       if (response.data && response.data.note) {
-        showToastMessage("Note has been updated");
         getAllNotes();
       }
     } catch (error) {

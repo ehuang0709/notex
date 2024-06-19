@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import { MdOutlinePushPin } from "react-icons/md"
+import { FaRegStar } from "react-icons/fa";
 import { MdCreate, MdDelete } from "react-icons/md"
 
 const NoteCard = ({ title, date, content, tags, isPinned, onEdit, onDelete, onPinNote }) => {
@@ -12,7 +12,7 @@ const NoteCard = ({ title, date, content, tags, isPinned, onEdit, onDelete, onPi
                 <span className='text-xs text-slate-500'>{moment(date).format('MM/DD/YYYY')}</span> 
             </div>
 
-            <MdOutlinePushPin className={`icon-btn ${isPinned ? 'text-primary' : 'text-slate-300'}`} onClick={onPinNote} />
+            <FaRegStar className={`icon-btn hover:text-primary ${isPinned ? 'text-primary' : 'text-slate-300'}`} onClick={onPinNote} />
         </div>
 
         <p className='text-xs text-slate-600 mt-2'>{content?.slice(0, 60)}</p>
