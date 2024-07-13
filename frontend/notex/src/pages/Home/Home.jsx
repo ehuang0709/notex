@@ -8,6 +8,8 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import axiosInstance from '../../utils/axiosInstance'
 import Toast from '../../components/ToastMessage/Toast'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
+import { TiWarningOutline } from "react-icons/ti";
+
 
 const Home = () => {
 
@@ -149,7 +151,7 @@ const Home = () => {
   };
 
   const confirmDelete = () => {
-    deleteNote(deleteModal.note._id);
+    deleteNote(showConfirmDeleteModal.note._id);
     setShowConfirmDeleteModal({ isShown: false, note: null });
   }
 
@@ -237,7 +239,7 @@ const Home = () => {
           },
         }}
         contentLabel=""
-        className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden transition-all"
+        className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden outline-none transition-all"
       ><AddEditNotes
           type={openAddEditModal.type}
           noteData={openAddEditModal.data}
@@ -255,33 +257,34 @@ const Home = () => {
         style={{
           overlay: {
             backgroundColor: "rgba(0,0,0,0.2)",
-          },
-          content: {
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            transform: 'translate(-50%, -50%)',
-            width: '30%',
-            padding: '20px',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           },
         }}
         contentLabel='Confirm Delete'
+        className="w-[26%] bg-white rounded-lg mx-auto px-6 py-8 overflow-hidden outline-none transition-all"
       >
-        <h2>Are you sure you want to delete this note?</h2>
-        <div className="flex justify-end mt-4">
-          <button
-            className="bg-gray-200 px-4 py-2 rounded mr-2"
-            onClick={cancelDelete}
-          >
-            Cancel
-          </button>
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded"
-            onClick={confirmDelete}
-          >
-            Delete
-          </button>
+        <div className="flex flex-col items-center">
+          <div className='w-11 h-11 flex items-center justify-center rounded-full bg-red-100 mb-3'>
+              <TiWarningOutline className='text-[28px] text-red-500' />
+          </div>
+          <h2 className="text-center font-semibold mb-3">Are you sure?</h2>
+          <p className='text-center text-sm font-light text-slate-600'>This action cannot be undone. All data associated with this note will be permanently lost.</p>
+          <div className="flex flex-col justify-center mt-4 w-full">
+              <button
+                  className="bg-red-600 text-white py-2 rounded-md w-full mb-3 transition-all hover:bg-red-500 hover:shadow-lg"
+                  onClick={confirmDelete}
+              >
+                  Delete
+              </button>
+              <button
+                  className="border-2 border-gray-200 py-2 rounded-md w-full transition-all hover:bg-gray-200"
+                  onClick={cancelDelete}
+              >
+                  Cancel
+              </button>
+          </div>
         </div>
       </Modal>
 
