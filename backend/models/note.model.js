@@ -6,8 +6,10 @@ const noteSchema = new Schema({
     title: { type: String, required: true },
     content: { type: String, required: true },
     tags: { type: [String], default: [] },
-    isPinned: { type: Boolean, default: false },
+    // userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     userId: { type: String, required: true },
+    folderId: { type: Schema.Types.ObjectId, ref: 'Folder' },
+    isPinned: { type: Boolean, default: false },
     createdOn: { type: Date, default: new Date().getTime() },
 });
 

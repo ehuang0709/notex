@@ -6,7 +6,8 @@ const mongoose = require("mongoose");
 mongoose.connect(config.connectionString);
 
 const User = require("./models/user.model");
-const Note = require("./models/note.model")
+const Note = require("./models/note.model");
+const Folder = require("./models/folder.model");
 
 const express = require("express");
 const cors = require("cors");
@@ -292,6 +293,66 @@ app.get("/search-notes/", authenticateToken, async (req, res) => {
             message: "Internal Server Error",
         });
     }
+});
+
+// ADD FOLDER
+app.post('/add-folder/', authenticateToken, async (req, res) => {
+    const { name } = req.body;
+    const { user } = req.user;
+
+    if (!name) {
+        return res.status(400).json({ error: true, message: "Folder name is required" });
+    }
+
+    try {
+        const folder = new Folder({
+            name,
+            userId: user._id,
+        });
+
+        await folder.save();
+
+        return res.json({
+            error: false,
+            folder,
+            message: "Folder added successfully",
+        });
+    } catch (error) {
+        return res.status(500).json({ error: true, message: "Internal Server Error" })
+    }
+});
+
+// GET ALL FOLDERS
+app.get("/get-all-folders/", authenticateToken, async (req, res) => {
+    const { user } = req.user;
+
+    try {
+        const folders = await Folder.find({ userId: user._id });
+        return res.json({ error: false, folders, message: "All folders retrieved successfully" });
+    } catch (error) {
+        return res.status(500).json({ error: true, message: "Internal Server Error" })
+    }
+});
+
+// DELETE FOLDER
+app.delete("/delete-folder/:folderId", authenticateToken, async (req, res) => {
+    const folderId = req.params.folderId;
+    const { user } = req.user;
+
+    try {
+        const folder = await Folder.findOne({ _id: folderId, userId: user._id });
+
+        if (!folder) {
+            return res.status(404).json({ error: true, message: "Folder not found" });
+        }
+
+        await Folder.deleteOne({ _id: folderId, userId: user._id });
+        await Note.deleteMany({ folderId: folderId, userId: user._id });
+
+        return res.json({ error: false, message: "Folder deleted successfully" });
+    } catch (error) {
+        return res.status(500).json({ error: true, message: "Internal Server Error" });
+    } 
 });
 
 app.listen(8000);
