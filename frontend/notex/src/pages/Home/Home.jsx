@@ -3,21 +3,30 @@ import Navbar from '../../components/Navbar/Navbar'
 import NoteCard from '../../components/Cards/NoteCard'
 import { MdAdd } from "react-icons/md"
 import AddEditNotes from './AddEditNotes'
+import AddEditFolders from './AddEditFolders'
+import getAllFolders from './FolderList'
 import Modal from "react-modal"
 import { useNavigate, useLocation } from 'react-router-dom'
 import axiosInstance from '../../utils/axiosInstance'
 import Toast from '../../components/ToastMessage/Toast'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
-import { TiWarningOutline } from "react-icons/ti";
+import { TiWarningOutline } from "react-icons/ti"
+import FolderList from './FolderList'
 
 
 const Home = () => {
 
-  const [openAddEditModal, setOpenAddEditModal] = useState({
+  const [openAddEditNoteModal, setOpenAddEditNoteModal] = useState({
     isShown: false,
     type: "add",
     data: null,
   });
+
+  const [openAddEditFolderModal, setOpenAddEditFolderModal] = useState({
+    isShown: false,
+    type: "add",
+    data: null,
+  });  
 
   const [showToastMsg, setShowToastMsg] = useState({
     isShown: false,
@@ -25,21 +34,26 @@ const Home = () => {
     type: "add",
   });
 
-  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState({
+  const [showConfirmDeleteNoteModal, setShowConfirmDeleteNoteModal] = useState({
     isShown: false,
     note: null,
   });
 
   const [allNotes, setAllNotes] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
+  const [selectedFolder, setSelectedFolder] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleEdit = (noteDetails) => {
-    setOpenAddEditModal({ isShown: true, data: noteDetails, type: 'edit' });
+  const handleEditNote = (noteDetails) => {
+    setOpenAddEditNoteModal({ isShown: true, data: noteDetails, type: 'edit' });
+  };
+
+  const handleEditFolder = (folderDetails) => {
+    setOpenAddEditFolderModal({ isShown: true, data: folderDetails, type: 'edit' });
   };
 
   const showToastMessage = (message, type) => {
@@ -136,27 +150,52 @@ const Home = () => {
     }
   }
 
+  // GET ALL NOTES IN FOLDER
+  const getNotesInFolder = async (folderId) => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get(`/get-notes/${folderId}`);
+
+      if (response.data && response.data.notes) {
+        setAllNotes(response.data.notes);
+      }
+    } catch (error) {
+      console.log("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleClearSearch = () => {
     setIsSearch(false);
     navigate(`/dashboard/`);
     getAllNotes();
   };
 
-  const closeAddEditModal = () => {
-    setOpenAddEditModal({ isShown: false })
+  const closeAddEditNoteModal = () => {
+    setOpenAddEditNoteModal({ isShown: false })
   }
 
-  const handleDeleteClick = (note) => {
-    setShowConfirmDeleteModal({ isShown: true, note });
+  const handleDeleteNoteClick = (note) => {
+    setShowConfirmDeleteNoteModal({ isShown: true, note });
   };
 
-  const confirmDelete = () => {
-    deleteNote(showConfirmDeleteModal.note._id);
-    setShowConfirmDeleteModal({ isShown: false, note: null });
+  const confirmDeleteNote = () => {
+    deleteNote(showConfirmDeleteNoteModal.note._id);
+    setShowConfirmDeleteNoteModal({ isShown: false, note: null });
   }
 
-  const cancelDelete = () => {
-    setShowConfirmDeleteModal({ isShown: false, note: null });
+  const cancelDeleteNote = () => {
+    setShowConfirmDeleteNoteModal({ isShown: false, note: null });
+  }
+
+  const handleFolderClick = (folder) => {
+    setSelectedFolder(folder);
+    getNotesInFolder(folder._id);
+  }
+
+  const closeAddEditFolderModal = () => {
+    setOpenAddEditFolderModal({ isShown: false })
   }
 
   useEffect(() => {
@@ -185,54 +224,93 @@ const Home = () => {
       />
 
       <div className='container mx-auto'>
-        {loading ? (
-          <div></div>
-        ) : (
-          allNotes.length > 0 ? (
-            <div className='grid grid-cols-3 gap-4 mt-8 mx-12'>
-              {allNotes.map((item) => (
-                <NoteCard 
-                  key={item._id}
-                  title={item.title} 
-                  date={item.createdOn}
-                  content={item.content}
-                  tags={item.tags}
-                  isPinned={item.isPinned}
-                  onEdit={() => handleEdit(item)}
-                  onDelete={() => handleDeleteClick(item)}
-                  onPinNote={() => updateIsPinned(item)}
-                />
-              ))}
-            </div> 
+        <div className='mx-12 mt-6 text-xs text-slate-400'>FOLDERS</div>
+        <FolderList onFolderClick={handleFolderClick} />
+
+        <button 
+          className='w-14 h-14 flex items-center justify-center rounded-full bg-red-800 shadow-xl hover:bg-red-900 transition-all absolute left-10 bottom-10' 
+          onClick={() => {
+            setOpenAddEditFolderModal({ isShown: true, type: "add", data: null });
+          }}
+        >
+          <MdAdd className='text-[32px] text-white' />
+        </button>
+
+        <Modal
+          isOpen={openAddEditFolderModal.isShown}
+          onRequestClose={closeAddEditFolderModal}
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0,0,0,0.2)",
+            },
+          }}
+          contentLabel=""
+          className="w-[30%] max-h-3/4 bg-white rounded-md mx-auto p-5 overflow-hidden outline-none transition-all fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          ><AddEditFolders
+            type={openAddEditFolderModal.type}
+            folderData={openAddEditFolderModal.data}
+            onClose={() => {
+              setOpenAddEditFolderModal({ isShown: false, type: "add", data: null });
+            }}
+            getAllFolders={getAllFolders}
+            showToastMessage={showToastMessage}
+          />
+        </Modal>
+
+        <hr className='mt-6 mb-4 mx-12' />
+        
+        <div className='notes-section'>
+          {selectedFolder && <h2>{selectedFolder.name}</h2>}
+          <div className='mx-12 text-xs text-slate-400'>NOTES</div>
+          {loading ? (
+            <div></div>
           ) : (
-            <EmptyCard 
-              message1={
-                isSearch 
-                  ? 'Oops! No notes found matching your search.' 
-                  : `Start creating your first note!`
-              }
-              message2={
-                isSearch 
-                  ? 'Please edit your search query or create a new note.' 
-                  : `Click the 'Add' button to jot down your thoughts, ideas, and reminders. Let's get started!`
-              }
-            />
-          )
-        )}
+            allNotes.length > 0 ? (
+              <div className='grid grid-cols-3 gap-4 mt-6 mx-12'>
+                {allNotes.map((item) => (
+                  <NoteCard 
+                    key={item._id}
+                    title={item.title} 
+                    date={item.createdOn}
+                    content={item.content}
+                    tags={item.tags}
+                    isPinned={item.isPinned}
+                    onEdit={() => handleEditNote(item)}
+                    onDelete={() => handleDeleteNoteClick(item)}
+                    onPinNote={() => updateIsPinned(item)}
+                  />
+                ))}
+              </div> 
+            ) : (
+              <EmptyCard 
+                message1={
+                  isSearch 
+                    ? 'Oops! No notes found matching your search.' 
+                    : `Start creating your first note!`
+                }
+                message2={
+                  isSearch 
+                    ? 'Please edit your search query or create a new note.' 
+                    : `Click the 'Add' button to jot down your thoughts, ideas, and reminders. Let's get started!`
+                }
+              />
+            )
+          )}
+        </div>
       </div>
 
       <button 
         className='w-14 h-14 flex items-center justify-center rounded-full bg-slate-800 shadow-xl hover:bg-slate-900 transition-all absolute right-10 bottom-10' 
         onClick={() => {
-          setOpenAddEditModal({ isShown: true, type: "add", data: null });
+          setOpenAddEditNoteModal({ isShown: true, type: "add", data: null });
         }}
       >
         <MdAdd className='text-[32px] text-white' />
       </button>
 
       <Modal
-        isOpen={openAddEditModal.isShown}
-        onRequestClose={closeAddEditModal}
+        isOpen={openAddEditNoteModal.isShown}
+        onRequestClose={closeAddEditNoteModal}
         style={{
           overlay: {
             backgroundColor: "rgba(0,0,0,0.2)",
@@ -241,10 +319,10 @@ const Home = () => {
         contentLabel=""
         className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden outline-none transition-all"
       ><AddEditNotes
-          type={openAddEditModal.type}
-          noteData={openAddEditModal.data}
+          type={openAddEditNoteModal.type}
+          noteData={openAddEditNoteModal.data}
           onClose={() => {
-            setOpenAddEditModal({ isShown: false, type: "add", data: null });
+            setOpenAddEditNoteModal({ isShown: false, type: "add", data: null });
           }}
           getAllNotes={getAllNotes}
           showToastMessage={showToastMessage}
@@ -252,8 +330,8 @@ const Home = () => {
       </Modal>
 
       <Modal
-        isOpen={showConfirmDeleteModal.isShown}
-        onRequestClose={cancelDelete}
+        isOpen={showConfirmDeleteNoteModal.isShown}
+        onRequestClose={cancelDeleteNote}
         style={{
           overlay: {
             backgroundColor: "rgba(0,0,0,0.2)",
@@ -274,13 +352,13 @@ const Home = () => {
           <div className="flex flex-col justify-center mt-4 w-full">
               <button
                   className="bg-red-600 text-white py-2 rounded-md w-full mb-3 transition-all hover:bg-red-500 hover:shadow-lg"
-                  onClick={confirmDelete}
+                  onClick={confirmDeleteNote}
               >
                   Delete
               </button>
               <button
                   className="border-2 border-gray-200 py-2 rounded-md w-full transition-all hover:bg-gray-200"
-                  onClick={cancelDelete}
+                  onClick={cancelDeleteNote}
               >
                   Cancel
               </button>
