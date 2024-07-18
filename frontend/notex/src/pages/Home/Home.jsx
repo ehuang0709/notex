@@ -27,15 +27,20 @@ const Home = () => {
     data: null,
   });  
 
+  const [showConfirmDeleteNoteModal, setShowConfirmDeleteNoteModal] = useState({
+    isShown: false,
+    note: null,
+  });
+
+  const [showConfirmDeleteFolderModal, setShowConfirmDeleteFolderModal] = useState({
+    isShown: false,
+    note: null,
+  });
+
   const [showToastMsg, setShowToastMsg] = useState({
     isShown: false,
     message: "",
     type: "add",
-  });
-
-  const [showConfirmDeleteNoteModal, setShowConfirmDeleteNoteModal] = useState({
-    isShown: false,
-    note: null,
   });
 
   const [allNotes, setAllNotes] = useState([]);
@@ -182,6 +187,20 @@ const Home = () => {
     }
   };
 
+  // DELETE FOLDER
+  const deleteFolder = async (folderId) => {
+    try {
+      const response = await axiosInstance.delete("/delete-folder/" + folderId);
+
+      if (response.data && !response.data.error) {
+        showToastMessage("Folder has been deleted", 'delete');
+        getAllFolders();
+      }
+    } catch (error) {
+      console.log("An unexpected error occurred. Please try again.");
+    }
+  };
+
   const handleClearSearch = () => {
     setIsSearch(false);
     navigate(`/dashboard/`);
@@ -196,13 +215,25 @@ const Home = () => {
     setShowConfirmDeleteNoteModal({ isShown: true, note });
   };
 
+  const handleDeleteFolderClick = (folder) => {
+    setShowConfirmDeleteFolderModal({ isShown: true, folder });
+  };
+
   const confirmDeleteNote = () => {
     deleteNote(showConfirmDeleteNoteModal.note._id);
     setShowConfirmDeleteNoteModal({ isShown: false, note: null });
   }
 
+  const confirmDeleteFolder = () => {
+    deleteFolder(showConfirmDeleteFolderModal.folder._id);
+    setShowConfirmDeleteFolderModal({ isShown: false, folder: null });
+  }
+
   const cancelDeleteNote = () => {
     setShowConfirmDeleteNoteModal({ isShown: false, note: null });
+  }
+  const cancelDeleteFolder = () => {
+    setShowConfirmDeleteFolderModal({ isShown: false, folder: null });
   }
 
   const handleFolderClick = (folder) => {
@@ -252,7 +283,7 @@ const Home = () => {
                     key={folder._id} 
                     folder={folder}
                     onEdit={() => handleEditFolder(folder)}
-                    // onDelete={() => handleDeleteNoteClick(folder)}
+                    onDelete={() => handleDeleteFolderClick(folder)}
                   />
               ))}
             </div>
@@ -393,6 +424,43 @@ const Home = () => {
               <button
                   className="border-2 border-gray-200 py-2 rounded-md w-full transition-all hover:bg-gray-200"
                   onClick={cancelDeleteNote}
+              >
+                  Cancel
+              </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={showConfirmDeleteFolderModal.isShown}
+        onRequestClose={cancelDeleteFolder}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.2)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          },
+        }}
+        contentLabel='Confirm Delete'
+        className="w-[26%] bg-white rounded-lg mx-auto px-6 py-8 overflow-hidden outline-none transition-all"
+      >
+        <div className="flex flex-col items-center">
+          <div className='w-11 h-11 flex items-center justify-center rounded-full bg-red-100 mb-3'>
+              <TiWarningOutline className='text-[28px] text-red-500' />
+          </div>
+          <h2 className="text-center font-semibold mb-3">Are you sure?</h2>
+          <p className='text-center text-sm font-light text-slate-600'>Deleting this folder will remove it from your collection. Notes associated with this folder will remain but will no longer be organized under this folder.</p>
+          <div className="flex flex-col justify-center mt-4 w-full">
+              <button
+                  className="bg-red-600 text-white py-2 rounded-md w-full mb-3 transition-all hover:bg-red-500 hover:shadow-lg"
+                  onClick={confirmDeleteFolder}
+              >
+                  Delete
+              </button>
+              <button
+                  className="border-2 border-gray-200 py-2 rounded-md w-full transition-all hover:bg-gray-200"
+                  onClick={cancelDeleteFolder}
               >
                   Cancel
               </button>

@@ -4,14 +4,21 @@ import { MdDeleteOutline } from 'react-icons/md'
 
 const Toast = ({ isShown, message, type, onClose }) => {
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      onClose();
-    }, 3000);
+    let timeoutId;
+    if (isShown) {
+      timeoutId = setTimeout(() => {
+        onClose();
+      }, 3000);
+    }
 
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [onClose]);
+  }, [isShown, onClose]);
+
+  if (!isShown) {
+    return null;
+  }
 
   return (
     <div className={`absolute top-20 right-6 transition-all duration-400 ${

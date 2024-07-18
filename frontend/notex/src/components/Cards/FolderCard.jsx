@@ -7,6 +7,13 @@ const FolderCard = ({ folder, onEdit, onDelete }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  const truncateFolderName = (name, maxLength) => {
+    if (name.length > maxLength) {
+      return `${name.substring(0, maxLength)}...`;
+    }
+    return name;
+  };
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -29,7 +36,7 @@ const FolderCard = ({ folder, onEdit, onDelete }) => {
       <div className='flex items-center justify-between'>
         <div className='flex items-center space-x-2'>
           <CiFolderOn className='text-lg text-slate-600' />
-          <h6 className='text-sm font-normal text-slate-600'>{folder.name}</h6>
+          <h6 className='text-sm font-normal text-slate-600'>{truncateFolderName(folder.name, 12)}</h6>
         </div>
         <div className='relative'>
           <button
