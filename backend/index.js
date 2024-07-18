@@ -322,6 +322,40 @@ app.post('/add-folder/', authenticateToken, async (req, res) => {
     }
 });
 
+// EDIT FOLDER
+app.put("/edit-folder/:folderId", authenticateToken, async (req, res) => {
+    const folderId = req.params.folderId;
+    const { name } = req.body;
+    const { user } = req.user;
+
+    if (!name) {
+        return res.status(400).json({ error: true, message: "No changes provided" });
+    }
+
+    try {
+        const folder = await Folder.findOne({ _id: folderId, userId: user._id });
+
+        if (!folder) {
+            return res.status(404).json({ error: true, message: "Folder not found" });
+        }
+
+        if (name) folder.name = name;
+
+        await folder.save();
+
+        return res.json({
+            error: false, 
+            folder, 
+            message: "Folder updated successfully",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            error: true,
+            message: "Internal Server Error",
+        });
+    }
+});
+
 // GET ALL FOLDERS
 app.get("/get-all-folders/", authenticateToken, async (req, res) => {
     const { user } = req.user;

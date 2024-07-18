@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import NoteCard from '../../components/Cards/NoteCard'
+import FolderCard from '../../components/Cards/FolderCard'; 
 import { MdAdd } from "react-icons/md"
 import AddEditNotes from './AddEditNotes'
 import AddEditFolders from './AddEditFolders'
-import getAllFolders from './FolderList'
 import Modal from "react-modal"
 import { useNavigate, useLocation } from 'react-router-dom'
 import axiosInstance from '../../utils/axiosInstance'
 import Toast from '../../components/ToastMessage/Toast'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
 import { TiWarningOutline } from "react-icons/ti"
-import FolderList from './FolderList'
 
 
 const Home = () => {
@@ -41,6 +40,7 @@ const Home = () => {
 
   const [allNotes, setAllNotes] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
+  const [allFolders, setAllFolders] = useState([]);
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -150,6 +150,22 @@ const Home = () => {
     }
   }
 
+  // GET ALL FOLDERS
+  const getAllFolders = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get("/get-all-folders/");
+
+      if (response.data && response.data.folders) {
+        setAllFolders(response.data.folders);
+      }
+    } catch (error) {
+      console.log("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // GET ALL NOTES IN FOLDER
   const getNotesInFolder = async (folderId) => {
     setLoading(true);
@@ -208,6 +224,7 @@ const Home = () => {
       setIsSearch(true);
     } else {
       getAllNotes();
+      getAllFolders();
     }
 
     getUserInfo();
@@ -225,7 +242,24 @@ const Home = () => {
 
       <div className='container mx-auto'>
         <div className='mx-12 mt-6 text-xs text-slate-400'>FOLDERS</div>
-        <FolderList onFolderClick={handleFolderClick} />
+        {loading ? (
+          <div></div>
+        ) : (
+          allFolders.length > 0 ? (
+            <div className='grid grid-cols-6 gap-4 mt-4 mx-12'>
+              {allFolders.map((folder) => (
+                  <FolderCard 
+                    key={folder._id} 
+                    folder={folder}
+                    onEdit={() => handleEditFolder(folder)}
+                    // onDelete={() => handleDeleteNoteClick(folder)}
+                  />
+              ))}
+            </div>
+          ) : (
+              <div>No folders found. Create a new folder to get started.</div>
+          )
+        )}
 
         <button 
           className='w-14 h-14 flex items-center justify-center rounded-full bg-red-800 shadow-xl hover:bg-red-900 transition-all absolute left-10 bottom-10' 
