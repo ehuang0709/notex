@@ -7,7 +7,24 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
   const [title, setTitle] = useState(noteData?.title || "");
   const [content, setContent] = useState(noteData?.content || "");
   const [tags, setTags] = useState(noteData?.tags || []);
+  const [folders, setFolders] = useState([]);
+  const [selectedFolder, setSelectedFolder] = useState(noteData?.folderId || null);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchFolders = async () => {
+      try {
+        const response = await axiosInstance.get('/get-all-folders');
+        if (response.data && response.data.folders) {
+          setFolders(response.data.folders);
+        }
+      } catch (error) {
+        console.log("Error fetching folders.");
+      }
+    };
+
+    fetchFolders();
+  }, []);
 
   // Add Note
   const addNewNote = async () => {
@@ -15,7 +32,8 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
       const response = await axiosInstance.post("/add-note", {
         title, 
         content, 
-        tags, 
+        tags,
+        folderId: selectedFolder
       });
 
       if (response.data && response.data.note) {
@@ -38,6 +56,7 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
         title, 
         content, 
         tags,
+        folderId: selectedFolder
       });
 
       if (response.data && response.data.note) {
@@ -107,6 +126,22 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
       <div className='mt-3'>
         <label className='input-label'>TAGS</label>
         <TagInput tags={tags} setTags={setTags} />
+      </div>
+
+      <div className='mt-3'>
+        <label className='input-label'>FOLDER</label>
+        <div className='flex items-center mt-3 input-label'>
+          <select
+            className='text-sm bg-transparent border px-2 py-2 rounded outline-none'
+            value={selectedFolder || ""}
+            onChange={({ target }) => setSelectedFolder(target.value)}
+          >
+            <option value="">Select...</option>
+            {folders.map(folder => (
+              <option key={folder._id} value={folder._id}>{folder.name}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {error && <p className='text-red-500 text-xs pt-4'>{error}</p>}

@@ -133,7 +133,7 @@ app.get("/get-user", authenticateToken, async (req, res) => {
 
 // ADD NOTE
 app.post("/add-note", authenticateToken, async (req, res) => {
-    const { title, content, tags } = req.body;
+    const { title, content, tags, folderId } = req.body;
     const { user } = req.user;
 
     if (!title) {
@@ -149,6 +149,7 @@ app.post("/add-note", authenticateToken, async (req, res) => {
             title,
             content,
             tags: tags || [],
+            folderId: folderId || null,
             userId: user._id,
         });
 
@@ -167,7 +168,7 @@ app.post("/add-note", authenticateToken, async (req, res) => {
 // EDIT NOTE, PUT may be better for editing notes than POST
 app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
     const noteId = req.params.noteId;
-    const { title, content, tags, isPinned } = req.body;
+    const { title, content, tags, folderId, isPinned } = req.body;
     const { user } = req.user;
 
     if (!title && !content && !tags) {
@@ -184,6 +185,7 @@ app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
         if (title) note.title = title;
         if (content) note.content = content;
         if (tags) note.tags = tags;
+        if (folderId) note.folderId = folderId;
         if (isPinned) note.isPinned = isPinned;
 
         await note.save();
@@ -384,6 +386,19 @@ app.delete("/delete-folder/:folderId", authenticateToken, async (req, res) => {
         await Note.deleteMany({ folderId: folderId, userId: user._id });
 
         return res.json({ error: false, message: "Folder deleted successfully" });
+    } catch (error) {
+        return res.status(500).json({ error: true, message: "Internal Server Error" });
+    } 
+});
+
+// GET ALL NOTES IN FOLDER
+app.get("/get-notes/:folderId", authenticateToken, async (req, res) => {
+    const { folderId } = req.params;
+    const { user } = req.user;
+
+    try {
+        const notes = await Note.find({ folderId: folderId, userId: user._id });
+        return res.json({ error: false, notes, message: "All notes associated with the folder retrieved successfully" });
     } catch (error) {
         return res.status(500).json({ error: true, message: "Internal Server Error" });
     } 

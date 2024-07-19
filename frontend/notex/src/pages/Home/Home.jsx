@@ -241,6 +241,12 @@ const Home = () => {
     getNotesInFolder(folder._id);
   }
 
+  const handleFolderDoubleClick = (folder) => {
+    // setSelectedFolder(folder);
+    // getNotesInFolder(folder._id);
+    navigate(`/folder/${folder._id}`);
+  }
+
   const closeAddEditFolderModal = () => {
     setOpenAddEditFolderModal({ isShown: false })
   }
@@ -284,6 +290,7 @@ const Home = () => {
                     folder={folder}
                     onEdit={() => handleEditFolder(folder)}
                     onDelete={() => handleDeleteFolderClick(folder)}
+                    onDoubleClick={() => handleFolderDoubleClick(folder)}
                   />
               ))}
             </div>
@@ -291,36 +298,6 @@ const Home = () => {
               <div>No folders found. Create a new folder to get started.</div>
           )
         )}
-
-        <button 
-          className='w-14 h-14 flex items-center justify-center rounded-full bg-red-800 shadow-xl hover:bg-red-900 transition-all absolute left-10 bottom-10' 
-          onClick={() => {
-            setOpenAddEditFolderModal({ isShown: true, type: "add", data: null });
-          }}
-        >
-          <MdAdd className='text-[32px] text-white' />
-        </button>
-
-        <Modal
-          isOpen={openAddEditFolderModal.isShown}
-          onRequestClose={closeAddEditFolderModal}
-          style={{
-            overlay: {
-              backgroundColor: "rgba(0,0,0,0.2)",
-            },
-          }}
-          contentLabel=""
-          className="w-[30%] max-h-3/4 bg-white rounded-md mx-auto p-5 overflow-hidden outline-none transition-all fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-          ><AddEditFolders
-            type={openAddEditFolderModal.type}
-            folderData={openAddEditFolderModal.data}
-            onClose={() => {
-              setOpenAddEditFolderModal({ isShown: false, type: "add", data: null });
-            }}
-            getAllFolders={getAllFolders}
-            showToastMessage={showToastMessage}
-          />
-        </Modal>
 
         <hr className='mt-6 mb-4 mx-12' />
         
@@ -364,6 +341,7 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Add Note Button */}
       <button 
         className='w-14 h-14 flex items-center justify-center rounded-full bg-slate-800 shadow-xl hover:bg-slate-900 transition-all absolute right-10 bottom-10' 
         onClick={() => {
@@ -373,6 +351,17 @@ const Home = () => {
         <MdAdd className='text-[32px] text-white' />
       </button>
 
+      {/* Add Folder Button */}
+      <button 
+          className='w-14 h-14 flex items-center justify-center rounded-full bg-red-800 shadow-xl hover:bg-red-900 transition-all absolute left-10 bottom-10' 
+          onClick={() => {
+            setOpenAddEditFolderModal({ isShown: true, type: "add", data: null });
+          }}
+        >
+          <MdAdd className='text-[32px] text-white' />
+        </button>
+
+      {/* Add/Edit Note Modal */}
       <Modal
         isOpen={openAddEditNoteModal.isShown}
         onRequestClose={closeAddEditNoteModal}
@@ -386,6 +375,7 @@ const Home = () => {
       ><AddEditNotes
           type={openAddEditNoteModal.type}
           noteData={openAddEditNoteModal.data}
+          allFolders={allFolders}
           onClose={() => {
             setOpenAddEditNoteModal({ isShown: false, type: "add", data: null });
           }}
@@ -394,6 +384,29 @@ const Home = () => {
         />
       </Modal>
 
+      {/* Add/Edit Folder Modal */}
+      <Modal
+          isOpen={openAddEditFolderModal.isShown}
+          onRequestClose={closeAddEditFolderModal}
+          style={{
+            overlay: {
+              backgroundColor: "rgba(0,0,0,0.2)",
+            },
+          }}
+          contentLabel=""
+          className="w-[30%] max-h-3/4 bg-white rounded-md mx-auto p-5 overflow-hidden outline-none transition-all fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+          ><AddEditFolders
+            type={openAddEditFolderModal.type}
+            folderData={openAddEditFolderModal.data}
+            onClose={() => {
+              setOpenAddEditFolderModal({ isShown: false, type: "add", data: null });
+            }}
+            getAllFolders={getAllFolders}
+            showToastMessage={showToastMessage}
+          />
+        </Modal>
+
+      {/* Confirm Delete Note Modal */}
       <Modal
         isOpen={showConfirmDeleteNoteModal.isShown}
         onRequestClose={cancelDeleteNote}
@@ -431,6 +444,7 @@ const Home = () => {
         </div>
       </Modal>
 
+      {/* Confirm Delete Folder Modal */}
       <Modal
         isOpen={showConfirmDeleteFolderModal.isShown}
         onRequestClose={cancelDeleteFolder}

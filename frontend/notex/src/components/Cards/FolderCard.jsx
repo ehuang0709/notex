@@ -3,7 +3,7 @@ import { CiFolderOn } from 'react-icons/ci';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FaPencilAlt, FaTrashAlt } from 'react-icons/fa';
 
-const FolderCard = ({ folder, onEdit, onDelete }) => {
+const FolderCard = ({ folder, onEdit, onDelete, onDoubleClick }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -32,7 +32,7 @@ const FolderCard = ({ folder, onEdit, onDelete }) => {
   }, []);
 
   return (
-    <div className='border rounded-xl p-4 hover:bg-slate-200'>
+    <div className='border rounded-xl p-4 hover:bg-slate-200 cursor-pointer' onDoubleClick={() => onDoubleClick(folder)}>
       <div className='flex items-center justify-between'>
         <div className='flex items-center space-x-2'>
           <CiFolderOn className='text-lg text-slate-600' />
