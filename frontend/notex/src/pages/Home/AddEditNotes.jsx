@@ -3,12 +3,12 @@ import TagInput from '../../components/Input/TagInput';
 import { MdClose } from 'react-icons/md';
 import axiosInstance from '../../utils/axiosInstance';
 
-const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMessage }) => {
+const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMessage, currentFolderId }) => {
   const [title, setTitle] = useState(noteData?.title || "");
   const [content, setContent] = useState(noteData?.content || "");
   const [tags, setTags] = useState(noteData?.tags || []);
   const [folders, setFolders] = useState([]);
-  const [selectedFolder, setSelectedFolder] = useState(noteData?.folderId || null);
+  const [selectedFolder, setSelectedFolder] = useState(noteData?.folderId || currentFolderId || null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -146,7 +146,7 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
 
       {error && <p className='text-red-500 text-xs pt-4'>{error}</p>}
 
-      <button className='btn-primary font-medium mt-5 p-3' onClick={handleAddNote}>
+      <button className='btn-primary font-medium mt-5 p-3 transition-all ease-in-out' onClick={handleAddNote}>
         {type === 'edit' ? 'UPDATE' : "ADD"}
       </button>
     </div>

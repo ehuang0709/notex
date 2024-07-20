@@ -232,18 +232,12 @@ const Home = () => {
   const cancelDeleteNote = () => {
     setShowConfirmDeleteNoteModal({ isShown: false, note: null });
   }
+
   const cancelDeleteFolder = () => {
     setShowConfirmDeleteFolderModal({ isShown: false, folder: null });
   }
 
-  const handleFolderClick = (folder) => {
-    setSelectedFolder(folder);
-    getNotesInFolder(folder._id);
-  }
-
   const handleFolderDoubleClick = (folder) => {
-    // setSelectedFolder(folder);
-    // getNotesInFolder(folder._id);
     navigate(`/folder/${folder._id}`);
   }
 
@@ -254,7 +248,7 @@ const Home = () => {
   useEffect(() => {
     // Check if there is a query parameter in the URL and perform search if present
     const queryParams = new URLSearchParams(location.search);
-    const query = queryParams.get('query');
+    const query = queryParams.get('q');
 
     if (query) {
       onSearchNote(query);
@@ -278,32 +272,39 @@ const Home = () => {
       />
 
       <div className='container mx-auto'>
-        <div className='mx-12 mt-6 text-xs text-slate-400'>FOLDERS</div>
-        {loading ? (
-          <div></div>
-        ) : (
-          allFolders.length > 0 ? (
-            <div className='grid grid-cols-6 gap-4 mt-4 mx-12'>
-              {allFolders.map((folder) => (
-                  <FolderCard 
-                    key={folder._id} 
-                    folder={folder}
-                    onEdit={() => handleEditFolder(folder)}
-                    onDelete={() => handleDeleteFolderClick(folder)}
-                    onDoubleClick={() => handleFolderDoubleClick(folder)}
-                  />
-              ))}
-            </div>
-          ) : (
-              <div>No folders found. Create a new folder to get started.</div>
-          )
+        {!isSearch && (
+          <>
+            <div className='mx-12 mt-24 text-xs text-slate-400'>FOLDERS</div>
+            {loading ? (
+              <div></div>
+            ) : (
+              allFolders.length > 0 ? (
+                <div className='grid grid-cols-6 gap-4 mt-4 mx-12'>
+                  {allFolders.map((folder) => (
+                      <FolderCard 
+                        key={folder._id} 
+                        folder={folder}
+                        onEdit={() => handleEditFolder(folder)}
+                        onDelete={() => handleDeleteFolderClick(folder)}
+                        onDoubleClick={() => handleFolderDoubleClick(folder)}
+                      />
+                  ))}
+                </div>
+              ) : (
+                  <div>No folders found. Create a new folder to get started.</div>
+              )
+            )}
+            <hr className='mt-6 mb-4 mx-12' />
+          </>
         )}
-
-        <hr className='mt-6 mb-4 mx-12' />
         
         <div className='notes-section'>
           {selectedFolder && <h2>{selectedFolder.name}</h2>}
-          <div className='mx-12 text-xs text-slate-400'>NOTES</div>
+          { !isSearch ? (
+            <div className='mx-12 text-xs text-slate-400'>NOTES</div>
+          ) : (
+            <div className='mx-12 mt-24 text-xs text-slate-400'>SEARCH RESULTS</div>
+          )}
           {loading ? (
             <div></div>
           ) : (
@@ -343,7 +344,7 @@ const Home = () => {
 
       {/* Add Note Button */}
       <button 
-        className='w-14 h-14 flex items-center justify-center rounded-full bg-slate-800 shadow-xl hover:bg-slate-900 transition-all absolute right-10 bottom-10' 
+        className='w-14 h-14 flex items-center justify-center rounded-full bg-slate-800 shadow-xl hover:bg-slate-900 transition-all fixed right-10 bottom-10' 
         onClick={() => {
           setOpenAddEditNoteModal({ isShown: true, type: "add", data: null });
         }}
@@ -353,7 +354,7 @@ const Home = () => {
 
       {/* Add Folder Button */}
       <button 
-          className='w-14 h-14 flex items-center justify-center rounded-full bg-red-800 shadow-xl hover:bg-red-900 transition-all absolute left-10 bottom-10' 
+          className='w-14 h-14 flex items-center justify-center rounded-full bg-red-800 shadow-xl hover:bg-red-900 transition-all fixed left-10 bottom-10' 
           onClick={() => {
             setOpenAddEditFolderModal({ isShown: true, type: "add", data: null });
           }}

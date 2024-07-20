@@ -78,7 +78,7 @@ const AddEditFolders = ({ folderData = {}, type, getAllFolders, onClose, showToa
 
       {error && <p className='text-red-500 text-xs pt-4'>{error}</p>}
 
-      <button className='btn-primary font-medium mt-5 p-3' onClick={handleAddFolder}>
+      <button className='btn-primary font-medium mt-6 p-3 transition-all ease-in-out' onClick={handleAddFolder}>
         {type === 'edit' ? 'UPDATE' : "CREATE"}
       </button>
     </div>

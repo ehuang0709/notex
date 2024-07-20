@@ -397,8 +397,26 @@ app.get("/get-notes/:folderId", authenticateToken, async (req, res) => {
     const { user } = req.user;
 
     try {
-        const notes = await Note.find({ folderId: folderId, userId: user._id });
+        const notes = await Note.find({ folderId: folderId, userId: user._id }).sort({ isPinned: -1 });
         return res.json({ error: false, notes, message: "All notes associated with the folder retrieved successfully" });
+    } catch (error) {
+        return res.status(500).json({ error: true, message: "Internal Server Error" });
+    } 
+});
+
+// GET FOLDER
+app.get("/get-folder/:folderId", authenticateToken, async (req, res) => {
+    const { folderId } = req.params;
+    const { user } = req.user;
+
+    try {
+        const folder = await Folder.findOne({ _id: folderId, userId: user._id });
+
+        if (!folder) {
+            return res.status(404).json({ error: true, message: "Folder not found" });
+        }
+
+        return res.json({ error: false, folder, message: "Folder retrieved successfully" });
     } catch (error) {
         return res.status(500).json({ error: true, message: "Internal Server Error" });
     } 

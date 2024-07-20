@@ -41,7 +41,7 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
   const notSignedIn = notSignedInPaths.includes(location.pathname);
 
   return (
-    <div className='bg-white flex items-center justify-between px-6 py-2 drop-shadow'>
+    <div className='bg-white flex items-center justify-between px-6 py-2 drop-shadow fixed top-0 left-0 w-full'>
         <h2 className={`text-xl font-medium text-black py-2 ${
         userInfo ? 'cursor-pointer' : 'cursor-default'}`} onClick={onClickNotex}>NOTEX</h2>
 
