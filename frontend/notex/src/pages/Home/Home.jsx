@@ -12,7 +12,6 @@ import Toast from '../../components/ToastMessage/Toast'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
 import { TiWarningOutline } from "react-icons/ti"
 
-
 const Home = () => {
 
   const [openAddEditNoteModal, setOpenAddEditNoteModal] = useState({
@@ -275,29 +274,42 @@ const Home = () => {
         {!isSearch && (
           <>
             <div className='mx-12 mt-24 text-xs text-slate-400'>FOLDERS</div>
-            {loading ? (
-              <div></div>
-            ) : (
-              allFolders.length > 0 ? (
-                <div className='grid grid-cols-6 gap-4 mt-4 mx-12'>
-                  {allFolders.map((folder) => (
-                      <FolderCard 
-                        key={folder._id} 
-                        folder={folder}
-                        onEdit={() => handleEditFolder(folder)}
-                        onDelete={() => handleDeleteFolderClick(folder)}
-                        onDoubleClick={() => handleFolderDoubleClick(folder)}
-                      />
-                  ))}
-                </div>
+            <div className='grid grid-cols-6 gap-4 mt-4 mx-12'>
+
+              {/* ADD FOLDER BUTTON */}
+              <button 
+                className='w-full min-h-[58px] flex items-center justify-center border-2 border-dotted border-slate-300 rounded-xl hover:shadow transition-all ease-in-out'
+                onClick={() => {
+                  setOpenAddEditFolderModal({ isShown: true, type: "add", data: null });
+                }}
+                style={{ gridColumn: 'span 1' }}
+              >
+                <MdAdd className='text-[32px] text-slate-300' />
+              </button>
+
+              {/* DISPLAY FOLDERS */}
+              {loading ? (
+                <div></div>
               ) : (
-                  <div>No folders found. Create a new folder to get started.</div>
-              )
-            )}
+                allFolders.length > 0 && (
+                  allFolders.map((folder) => (
+                    <FolderCard 
+                      key={folder._id} 
+                      folder={folder}
+                      onEdit={() => handleEditFolder(folder)}
+                      onDelete={() => handleDeleteFolderClick(folder)}
+                      onDoubleClick={() => handleFolderDoubleClick(folder)}
+                      style={{ gridColumn: `span 1` }}
+                    />
+                  ))
+                )
+              )}
+            </div>
             <hr className='mt-6 mb-4 mx-12' />
           </>
         )}
-        
+
+        {/* DISPLAY NOTES */}
         <div className='notes-section'>
           {selectedFolder && <h2>{selectedFolder.name}</h2>}
           { !isSearch ? (
@@ -351,16 +363,6 @@ const Home = () => {
       >
         <MdAdd className='text-[32px] text-white' />
       </button>
-
-      {/* Add Folder Button */}
-      <button 
-          className='w-14 h-14 flex items-center justify-center rounded-full bg-red-800 shadow-xl hover:bg-red-900 transition-all fixed left-10 bottom-10' 
-          onClick={() => {
-            setOpenAddEditFolderModal({ isShown: true, type: "add", data: null });
-          }}
-        >
-          <MdAdd className='text-[32px] text-white' />
-        </button>
 
       {/* Add/Edit Note Modal */}
       <Modal

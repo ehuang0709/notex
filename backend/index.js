@@ -383,7 +383,7 @@ app.delete("/delete-folder/:folderId", authenticateToken, async (req, res) => {
         }
 
         await Folder.deleteOne({ _id: folderId, userId: user._id });
-        await Note.deleteMany({ folderId: folderId, userId: user._id });
+        await Note.updateMany({ folderId: null, userId: user._id });
 
         return res.json({ error: false, message: "Folder deleted successfully" });
     } catch (error) {
