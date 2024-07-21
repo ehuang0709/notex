@@ -274,7 +274,7 @@ const Home = () => {
         {!isSearch && (
           <>
             <div className='mx-12 mt-24 text-xs text-slate-400'>FOLDERS</div>
-            <div className='grid grid-cols-6 gap-4 mt-4 mx-12'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mt-4 mx-12'>
 
               {/* ADD FOLDER BUTTON */}
               <button 
