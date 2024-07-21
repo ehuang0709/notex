@@ -9,12 +9,6 @@ const FolderCard = ({ folder, onEdit, onDelete, onDoubleClick }) => {
   const cardRef = useRef(null);
   const dropdownRef = useRef(null);
 
-  const truncateFolderName = (name, maxLength) => {
-    if (name.length > maxLength) {
-      return `${name.substring(0, maxLength)}...`;
-    }
-    return name;
-  };
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -44,11 +38,17 @@ const FolderCard = ({ folder, onEdit, onDelete, onDoubleClick }) => {
   }, []);
 
   return (
-    <div ref={cardRef} className={`rounded-xl p-4 cursor-pointer ${ isSelected ? 'bg-blue-100 border border-blue-100' : 'hover:bg-slate-200 border' } `} onDoubleClick={() => onDoubleClick(folder)} onClick={handleCardClick}>
+    <div 
+      ref={cardRef} 
+      className={`rounded-xl p-4 cursor-pointer ${ 
+        isSelected ? 'bg-blue-100 border border-blue-100' : 'hover:bg-slate-200 border' } `} 
+      onDoubleClick={() => onDoubleClick(folder)} 
+      onClick={handleCardClick}
+      >
       <div className='flex items-center justify-between'>
         <div className='flex items-center space-x-2'>
           <CiFolderOn className='text-lg text-slate-600' />
-          <h6 className='text-sm font-normal text-slate-600'>{truncateFolderName(folder.name, 12)}</h6>
+          <h6 className='text-sm font-normal text-slate-600 truncate max-w-24'>{folder.name}</h6>
         </div>
         <div className='relative'>
           <button

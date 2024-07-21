@@ -26,6 +26,14 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
     fetchFolders();
   }, []);
 
+  // Truncate folder name when selecting folder
+  const truncateName = (name) => {
+    if (name.length > 15) {
+      return name.substring(0, 15) + '...';
+    }
+    return name;
+  };
+
   // Add Note
   const addNewNote = async () => {
     try {
@@ -138,7 +146,11 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
           >
             <option value="">Select...</option>
             {folders.map(folder => (
-              <option key={folder._id} value={folder._id}>{folder.name}</option>
+              <option 
+                key={folder._id} 
+                value={folder._id} 
+                className='truncate'
+              >{truncateName(folder.name)}</option>
             ))}
           </select>
         </div>
