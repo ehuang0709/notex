@@ -123,7 +123,7 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
         <label className='input-label'>CONTENT</label>
         <textarea
           type='text'
-          className='text-sm text-slate-950 outline-none bg-slate-50 p-2 rounded'
+          className='text-sm text-slate-900 outline-none bg-slate-50 p-2 rounded'
           placeholder='Content'
           rows={10}
           value={content}

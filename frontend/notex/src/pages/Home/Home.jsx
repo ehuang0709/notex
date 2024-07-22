@@ -12,6 +12,7 @@ import Toast from '../../components/ToastMessage/Toast'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
 import { TiWarningOutline } from "react-icons/ti"
 
+
 const Home = () => {
 
   const [openAddEditNoteModal, setOpenAddEditNoteModal] = useState({
@@ -374,7 +375,7 @@ const Home = () => {
           },
         }}
         contentLabel=""
-        className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden outline-none transition-all"
+        className="w-[40%] max-h-[80vh] bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden outline-none transition-all overflow-y-auto scrollbar-custom"
       ><AddEditNotes
           type={openAddEditNoteModal.type}
           noteData={openAddEditNoteModal.data}

@@ -6,7 +6,10 @@ const TagInput = ({ tags, setTags }) => {
   const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = (e) => {
-    setInputValue(e.target.value);
+    const value = e.target.value;
+    if (value.length <= 50) {
+      setInputValue(value);
+    }
   };
 
   const addNewTag = () => {
@@ -26,13 +29,20 @@ const TagInput = ({ tags, setTags }) => {
     setTags(tags.filter((tag) => tag !== tagToRemove))
   };
 
+  const truncateName = (name) => {
+    if (name.length > 18) {
+      return name.substring(0, 18) + '...';
+    }
+    return name;
+  };
+
   return ( 
     <div>
       {tags?.length > 0 && (
         <div className='flex items-center gap-2 flex-wrap mt-2'>
           {tags.map((tag, index) => (
             <span key={index} className="flex items-center gap-2 text-sm text-slate-900 bg-slate-100 px-3 py-1 rounded">
-                # {tag}
+                # {truncateName(tag)}
                 <button onClick={() => {handleRemoveTag(tag);}}>
                     <MdClose />
                 </button>
