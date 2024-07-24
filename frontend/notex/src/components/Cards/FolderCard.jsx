@@ -51,15 +51,19 @@ const FolderCard = ({ folder, onEdit, onDelete, onDoubleClick }) => {
           <h6 className='text-sm font-normal text-slate-600 truncate max-w-24'>{folder.name}</h6>
         </div>
         <div className='relative'>
+
+          {/* EDIT/DELETE DROPDOWN BUTTON */}
           <button
             onClick={toggleDropdown}
-            className='text-sm text-slate-600 cursor-pointer relative rounded-full p-1 hover:bg-slate-300 transition-all ease-in-out'
+            className='text-sm z-0 text-slate-600 cursor-pointer relative rounded-full p-1 hover:bg-slate-300 transition-all ease-in-out'
           >
             <BsThreeDotsVertical />
           </button>
+
+          {/* DROPDOWN */}
           <div
             ref={dropdownRef}
-            className={`absolute right-0 mt-2 w-36 bg-white border rounded shadow-lg overflow-hidden transition-all duration-500 ease-in-out ${
+            className={`absolute z-10 right-0 mt-2 w-36 bg-white border rounded shadow-lg overflow-hidden transition-all duration-500 ease-in-out ${
               isDropdownOpen ? 'h-auto' : 'h-0'
             }`}
             style={{

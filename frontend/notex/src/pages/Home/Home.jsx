@@ -12,7 +12,6 @@ import Toast from '../../components/ToastMessage/Toast'
 import EmptyCard from '../../components/EmptyCard/EmptyCard'
 import { TiWarningOutline } from "react-icons/ti"
 
-
 const Home = () => {
 
   const [openAddEditNoteModal, setOpenAddEditNoteModal] = useState({

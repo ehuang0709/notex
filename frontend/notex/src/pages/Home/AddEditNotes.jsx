@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TagInput from '../../components/Input/TagInput';
 import { MdClose } from 'react-icons/md';
 import axiosInstance from '../../utils/axiosInstance';
+import FolderInput from '../../components/Input/FolderInput';
 
 const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMessage, currentFolderId }) => {
   const [title, setTitle] = useState(noteData?.title || "");
@@ -26,15 +27,6 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
     fetchFolders();
   }, []);
 
-  // Truncate folder name when selecting folder
-  const truncateName = (name) => {
-    if (name.length > 15) {
-      return name.substring(0, 15) + '...';
-    }
-    return name;
-  };
-
-  // Add Note
   const addNewNote = async () => {
     try {
       const response = await axiosInstance.post("/add-note", {
@@ -56,7 +48,6 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
     }
   };
 
-  // Edit Note
   const editNote = async () => {
     const noteId = noteData._id;
     try {
@@ -137,23 +128,11 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
       </div>
 
       <div className='mt-3'>
-        <label className='input-label'>FOLDER</label>
-        <div className='flex items-center mt-3 input-label'>
-          <select
-            className='text-sm bg-transparent border px-2 py-2 rounded outline-none'
-            value={selectedFolder || ""}
-            onChange={({ target }) => setSelectedFolder(target.value)}
-          >
-            <option value="">Select...</option>
-            {folders.map(folder => (
-              <option 
-                key={folder._id} 
-                value={folder._id} 
-                className='truncate'
-              >{truncateName(folder.name)}</option>
-            ))}
-          </select>
-        </div>
+        <FolderInput
+          folders={folders}
+          selectedFolder={selectedFolder}
+          setSelectedFolder={setSelectedFolder}
+        />
       </div>
 
       {error && <p className='text-red-500 text-xs pt-4'>{error}</p>}
