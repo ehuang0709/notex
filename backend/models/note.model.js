@@ -8,6 +8,7 @@ const noteSchema = new Schema({
     tags: { type: [String], default: [] },
     userId: { type: String, required: true },
     folderId: { type: Schema.Types.ObjectId, ref: 'Folder' },
+    codeSnippet: { type: String, default: '' },
     isPinned: { type: Boolean, default: false },
     createdOn: { type: Date, default: new Date().getTime() },
 });

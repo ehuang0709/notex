@@ -55,7 +55,7 @@ const FolderCard = ({ folder, onEdit, onDelete, onDoubleClick }) => {
           {/* EDIT/DELETE DROPDOWN BUTTON */}
           <button
             onClick={toggleDropdown}
-            className='text-sm z-0 text-slate-600 cursor-pointer relative rounded-full p-1 hover:bg-slate-300 transition-all ease-in-out'
+            className='text-sm text-slate-600 cursor-pointer relative rounded-full p-1 hover:bg-slate-300 transition-all ease-in-out'
           >
             <BsThreeDotsVertical />
           </button>
@@ -63,7 +63,7 @@ const FolderCard = ({ folder, onEdit, onDelete, onDoubleClick }) => {
           {/* DROPDOWN */}
           <div
             ref={dropdownRef}
-            className={`absolute z-10 right-0 mt-2 w-36 bg-white border rounded shadow-lg overflow-hidden transition-all duration-500 ease-in-out ${
+            className={`absolute right-0 mt-2 w-36 bg-white border rounded shadow-lg overflow-hidden transition-all duration-500 ease-in-out ${
               isDropdownOpen ? 'h-auto' : 'h-0'
             }`}
             style={{

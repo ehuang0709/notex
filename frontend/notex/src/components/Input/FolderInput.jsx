@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FaAngleDown } from "react-icons/fa";
+import { FaAngleUp } from "react-icons/fa";
 
 const FolderInput = ({ folders, selectedFolder, setSelectedFolder }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,7 +65,7 @@ const FolderInput = ({ folders, selectedFolder, setSelectedFolder }) => {
             {selectedFolder ? truncateName(folders.find(f => f._id === selectedFolder)?.name) : "Select..."}
           </span>
 
-          <FaAngleDown className={`transition-transform text-slate-700 ${isOpen ? 'rotate-180' : ''}`} />
+          <FaAngleUp className={`transition-transform text-slate-700 ${isOpen ? 'rotate-180' : ''}`} />
         </div>
 
         {/* DROPDOWN */}

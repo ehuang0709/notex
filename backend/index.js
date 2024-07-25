@@ -133,7 +133,7 @@ app.get("/get-user", authenticateToken, async (req, res) => {
 
 // ADD NOTE
 app.post("/add-note", authenticateToken, async (req, res) => {
-    const { title, content, tags, folderId } = req.body;
+    const { title, content, tags, folderId, codeSnippet } = req.body;
     const { user } = req.user;
 
     if (!title) {
@@ -151,6 +151,7 @@ app.post("/add-note", authenticateToken, async (req, res) => {
             tags: tags || [],
             folderId: folderId || null,
             userId: user._id,
+            codeSnippet: codeSnipper || '',
         });
 
         await note.save();
@@ -168,10 +169,10 @@ app.post("/add-note", authenticateToken, async (req, res) => {
 // EDIT NOTE, PUT may be better for editing notes than POST
 app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
     const noteId = req.params.noteId;
-    const { title, content, tags, folderId, isPinned } = req.body;
+    const { title, content, tags, folderId, isPinned, codeSnippet } = req.body;
     const { user } = req.user;
 
-    if (!title && !content && !tags) {
+    if (!title && !content && !tags && !codeSnippet) {
         return res.status(400).json({ error: true, message: "No changes provided" });
     }
 
@@ -187,6 +188,7 @@ app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
         if (tags) note.tags = tags;
         if (folderId) note.folderId = folderId;
         if (isPinned) note.isPinned = isPinned;
+        if (codeSnippet) note.codeSnippet = codeSnippet;
 
         await note.save();
 
