@@ -3,6 +3,11 @@ import TagInput from '../../components/Input/TagInput';
 import { MdClose } from 'react-icons/md';
 import axiosInstance from '../../utils/axiosInstance';
 import FolderInput from '../../components/Input/FolderInput';
+import { Controlled as CodeMirror } from 'react-codemirror2';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/material.css';
+import 'codemirror/mode/javascript/javascript';
+
 
 const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMessage, currentFolderId }) => {
   const [title, setTitle] = useState(noteData?.title || "");
@@ -10,6 +15,8 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
   const [tags, setTags] = useState(noteData?.tags || []);
   const [folders, setFolders] = useState([]);
   const [selectedFolder, setSelectedFolder] = useState(noteData?.folderId || currentFolderId || null);
+  const [showCodeEditor, setShowCodeEditor] = useState(false);
+  const [codeSnippet, setCodeSnippet] = useState(noteData?.codeSnippet || '');
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -33,7 +40,8 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
         title, 
         content, 
         tags,
-        folderId: selectedFolder
+        folderId: selectedFolder,
+        codeSnippet
       });
 
       if (response.data && response.data.note) {
@@ -55,7 +63,8 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
         title, 
         content, 
         tags,
-        folderId: selectedFolder
+        folderId: selectedFolder,
+        codeSnippet
       });
 
       if (response.data && response.data.note) {
@@ -99,17 +108,19 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
         <MdClose className='text-xl text-slate-400' />
       </button>
 
+      {/* TITLE */}
       <div className='flex flex-col gap-2'>
         <label className='input-label'>TITLE</label>
         <input
           type='text'
           className='text-2xl text-flate-950 outline-none'
-          placeholder='Go To Gym At 5'
+          placeholder='Get Lunch at 12'
           value={title}
           onChange={({ target }) => setTitle(target.value)}
         />
       </div>
 
+      {/* CONTENT */}
       <div className='flex flex-col gap-2 mt-4'>
         <label className='input-label'>CONTENT</label>
         <textarea
@@ -122,11 +133,13 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
         />
       </div>
 
+      {/* TAGS */}
       <div className='mt-3'>
         <label className='input-label'>TAGS</label>
         <TagInput tags={tags} setTags={setTags} />
       </div>
 
+      {/* FOLDER */}
       <div className='mt-3'>
         <FolderInput
           folders={folders}

@@ -10,6 +10,9 @@ export default {
         primary: "#2B85FF",
         secondary: "#EF863E",
       },
+      // transitionProperty: {
+      //   'width': 'width',
+      // },
       keyframes: {
         slideUp: {
           '0%': { transform: 'translateY(5px)', opacity: '0' },
@@ -19,10 +22,20 @@ export default {
           '0%': { transform: 'translateY(0)', opacity: '1' },
           '100%': { transform: 'translateY(px)', opacity: '0' },
         },
+        slideIn: {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        slideOut: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
       },
       animation: {
         slideUp: 'slideUp 0.3s ease-out forwards',
         slideDown: 'slideDown 0.3s ease-out forwards',
+        slideIn: 'slideIn 0.3s ease-in-out',
+        slideOut: 'slideOut 0.3s ease-in-out',
       },
     },
   },
