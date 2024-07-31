@@ -18,9 +18,9 @@ const NoteCard = ({ title, date, content, tags, isPinned, onEdit, onDelete, onPi
 
   return (
     <div className='border rounded p-4 bg-white hover:shadow-xl transition-all ease-in-out'>
-      <div className='flex items-center justify-between'>
+      <div className='flex justify-between'>
         <div>
-          <h6 className='text-sm font-medium'>{title}</h6>
+          <h6 className='text-sm font-medium cursor-pointer hover:text-primary transition-all ease-in-out' onClick={onEdit}>{title}</h6>
           <span className='text-xs text-slate-500'>{moment(date).format('MM/DD/YYYY')}</span>
         </div>
 
@@ -36,8 +36,8 @@ const NoteCard = ({ title, date, content, tags, isPinned, onEdit, onDelete, onPi
         </div>
 
         <div className='flex items-center gap-2'>
-          <MdCreate className='icon-btn hover:text-green-600' onClick={onEdit} />
-          <MdDelete className='icon-btn hover:text-red-500' onClick={onDelete} />
+          <MdCreate className='icon-btn hover:text-green-600 transition-all ease-in-out' onClick={onEdit} />
+          <MdDelete className='icon-btn hover:text-red-500 transition-all ease-in-out' onClick={onDelete} />
         </div>
       </div>
     </div>
