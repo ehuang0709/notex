@@ -45,9 +45,9 @@ const Home = () => {
   const [allNotes, setAllNotes] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
   const [allFolders, setAllFolders] = useState([]);
-  const [selectedFolder, setSelectedFolder] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [modalWidth, setModalWidth] = useState('40%');
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -170,22 +170,6 @@ const Home = () => {
     }
   };
 
-  // GET ALL NOTES IN FOLDER
-  const getNotesInFolder = async (folderId) => {
-    setLoading(true);
-    try {
-      const response = await axiosInstance.get(`/get-notes/${folderId}`);
-
-      if (response.data && response.data.notes) {
-        setAllNotes(response.data.notes);
-      }
-    } catch (error) {
-      console.log("An unexpected error occurred. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // DELETE FOLDER
   const deleteFolder = async (folderId) => {
     try {
@@ -207,7 +191,8 @@ const Home = () => {
   };
 
   const closeAddEditNoteModal = () => {
-    setOpenAddEditNoteModal({ isShown: false })
+    setOpenAddEditNoteModal({ isShown: false });
+    setModalWidth('40%');
   }
 
   const handleDeleteNoteClick = (note) => {
@@ -243,6 +228,10 @@ const Home = () => {
   const closeAddEditFolderModal = () => {
     setOpenAddEditFolderModal({ isShown: false })
   }
+
+  const toggleModalWidth = () => {
+    setModalWidth(prevWidth => (prevWidth === '40%' ? '80%' : '40%'));
+  };
 
   useEffect(() => {
     // Check if there is a query parameter in the URL and perform search if present
@@ -311,7 +300,6 @@ const Home = () => {
 
         {/* DISPLAY NOTES */}
         <div className='notes-section'>
-          {selectedFolder && <h2>{selectedFolder.name}</h2>}
           { !isSearch ? (
             <div className='mx-12 text-xs text-slate-400'>NOTES</div>
           ) : (
@@ -374,8 +362,9 @@ const Home = () => {
           },
         }}
         contentLabel=""
-        className="w-[40%] max-h-[80vh] bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden outline-none transition-all overflow-y-auto scrollbar-custom"
-      ><AddEditNotes
+        className={`w-[${modalWidth}] max-h-[80vh] bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden outline-none transition-all overflow-y-auto scrollbar-custom`}
+      >
+        <AddEditNotes
           type={openAddEditNoteModal.type}
           noteData={openAddEditNoteModal.data}
           allFolders={allFolders}
@@ -384,6 +373,7 @@ const Home = () => {
           }}
           getAllNotes={getAllNotes}
           showToastMessage={showToastMessage}
+          toggleModalWidth={toggleModalWidth}
         />
       </Modal>
 

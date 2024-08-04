@@ -151,7 +151,7 @@ app.post("/add-note", authenticateToken, async (req, res) => {
             tags: tags || [],
             folderId: folderId || null,
             userId: user._id,
-            codeSnippet: codeSnipper || '',
+            codeSnippet: codeSnippet || '',
         });
 
         await note.save();

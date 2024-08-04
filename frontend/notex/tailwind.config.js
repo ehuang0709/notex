@@ -9,6 +9,8 @@ export default {
       colors: {
         primary: "#2B85FF",
         secondary: "#EF863E",
+        darkGray: "#1E1E1E",
+        darkCharcoal: '#333333',
       },
       // transitionProperty: {
       //   'width': 'width',
@@ -32,8 +34,8 @@ export default {
         },
       },
       animation: {
-        slideUp: 'slideUp 0.3s ease-out forwards',
-        slideDown: 'slideDown 0.3s ease-out forwards',
+        slideUp: 'slideUp 0.2s ease-out forwards',
+        slideDown: 'slideDown 0.2s ease-out forwards',
         slideIn: 'slideIn 0.3s ease-in-out',
         slideOut: 'slideOut 0.3s ease-in-out',
       },

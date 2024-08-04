@@ -24,6 +24,10 @@
     @apply w-full text-sm bg-primary text-white p-2 rounded my-1 hover:bg-blue-600;
   }
 
+  .btn-run-code {
+    @apply w-1/4 text-xs bg-green-500 text-white p-2 rounded my-1 hover:bg-green-600 transition-all ease-in-out;
+  }
+
   .icon-btn {
     @apply text-xl text-slate-300 cursor-pointer hover:text-primary;
   }

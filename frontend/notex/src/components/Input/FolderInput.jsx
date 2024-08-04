@@ -35,8 +35,10 @@ const FolderInput = ({ folders, selectedFolder, setSelectedFolder }) => {
   );
 
   const truncateName = (name, maxLength = 14) => {
+    if (!name) return '';
     return name.length > maxLength ? `${name.substring(0, maxLength)}...` : name;
   };
+  
 
   useEffect(() => {
     if (dropdownRef.current) {
