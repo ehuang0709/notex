@@ -40,7 +40,6 @@
 .scrollbar-custom {
   scrollbar-width: thin; /* For Firefox */
   scrollbar-color: #cbd5e1 #f8fafc; /* For Firefox */
-  border-radius: 5px;
 }
 
 .scrollbar-custom::-webkit-scrollbar {

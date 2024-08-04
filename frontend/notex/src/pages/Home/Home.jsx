@@ -53,6 +53,7 @@ const Home = () => {
   const location = useLocation();
 
   const handleEditNote = (noteDetails) => {
+    setModalWidth('40%');
     setOpenAddEditNoteModal({ isShown: true, data: noteDetails, type: 'edit' });
   };
 

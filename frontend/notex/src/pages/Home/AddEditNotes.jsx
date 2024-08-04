@@ -4,12 +4,7 @@ import { MdClose } from 'react-icons/md';
 import axiosInstance from '../../utils/axiosInstance';
 import FolderInput from '../../components/Input/FolderInput';
 import { CiCircleChevRight } from "react-icons/ci";
-import CodeMirror from '@uiw/react-codemirror';
-import { vscodeDark } from '@uiw/codemirror-theme-vscode';
-import { javascript } from '@codemirror/lang-javascript';
-import { FaPlay } from "react-icons/fa";
-import { FaCode } from "react-icons/fa6";
-
+import CodeEditor from '../../components/CodeEditor/CodeEditor';
 
 
 const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMessage, currentFolderId, toggleModalWidth }) => {
@@ -20,7 +15,6 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
   const [selectedFolder, setSelectedFolder] = useState(noteData?.folderId || currentFolderId || null);
   const [isCodeEditorOpen, setisCodeEditorOpen] = useState(false);
   const [codeSnippet, setCodeSnippet] = useState(noteData?.codeSnippet || '');
-  const [codeOutput, setCodeOutput] = useState('');
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -108,24 +102,6 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
     setisCodeEditorOpen(!isCodeEditorOpen);
   }
 
-  const handleRunCode = () => {
-    try {
-      setCodeOutput('');
-
-      const code = codeSnippet;
-      const originalConsoleLog = console.log;
-      console.log = (...args) => {
-        setCodeOutput(args.join(' '));
-      };
-
-      eval(code);
-
-      console.log = originalConsoleLog;
-    } catch (error) {
-      setCodeOutput(`Error: ${error.message}`);
-    }
-  }
-
   return (
     <div className={`relative ${isCodeEditorOpen ? 'flex' : ''}`}>
       <div className={`${isCodeEditorOpen ? 'w-[48%]' : 'w-full'} transition-all`}>
@@ -175,7 +151,7 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
             setSelectedFolder={setSelectedFolder}
           />
           <CiCircleChevRight 
-            className={`icon-btn mt-9 text-3xl transition-all ease-in-out hover:text-gray-400 ${isCodeEditorOpen ? 'rotate-180' : ''}`}
+            className={`icon-btn mt-9 text-3xl transition-transform hover:text-gray-400 ${isCodeEditorOpen ? 'rotate-180' : ''}`}
             onClick={handleToggle}  
           />
         </div>
@@ -189,44 +165,11 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
 
       {isCodeEditorOpen && (
         <div className={`mt-16 ml-8 rounded transition-transform duration-300 ease-in-out ${isCodeEditorOpen ? 'w-[48%]' : 'w-0'} overflow-hidden`}>
-          <div className='relative flex justify-between items-center text-xs text-neutral-100 p-1 bg-[#333333] rounded-t'>
-            <div className='relative flex items-center p-1'>
-              <FaCode className='mr-2 text-green-500'/>
-              CODE
-            </div>
-            <button 
-              className='relative flex items-center mr-2 px-2 cursor-pointer p-1 rounded hover:bg-neutral-700 transition-all ease-in-out'
-              onClick={handleRunCode}
-            >
-              <FaPlay className='mr-2 text-gray-400'/>
-              Run
-            </button>
-          </div>
-          <CodeMirror
-            value={codeSnippet}
-            height="216px"
-            theme={vscodeDark}
-            extensions={[javascript({ jsx: true })]}
-            onChange={(value) => setCodeSnippet(value)}
-            className='text-xs'
+          <CodeEditor
+            codeSnippet={codeSnippet}
+            setCodeSnippet={setCodeSnippet}
           />
-          <div className='mt-4'>
-            <div className='text-xs text-neutral-100 p-2 bg-darkCharcoal rounded-t'>OUTPUT</div>
-            <pre className='bg-darkGray p-2 rounded-b h-32 text-xs text-neutral-100 text-wrap overflow-y-auto'>{codeOutput}</pre>
-          </div>
-
-          
-        {/* <CodeMirror
-          value={code}
-          theme={darcula}
-          options={{
-            mode: 'javascript',
-            lineNumbers: true
-          }}
-          onChange={(editor, data, value) => setCode(value)}
-        /> */}
-
-      </div>
+        </div>
       )}
     </div>
   );
