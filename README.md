@@ -3,6 +3,8 @@
 ## Description
 **NOTEX** is a comprehensive note taking and to-do application focused around coders, featuring an expandable CodeMirror code editor. It allows users to create, edit, and manage notes with support for code snippets. The app includes functionalities for adding tags, organizing notes into folders, searching for notes, and running code snippets inside the comfort of your note.
 
+**Check it out here**: https://notexapp.netlify.app/
+
 ## Features
 - **Note Management**: Create, edit, delete, and organize notes with tags and folders.
 - **Search Functionality**: Search for notes by title or title.
