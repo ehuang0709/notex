@@ -11,6 +11,7 @@ const SignUp = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
@@ -30,6 +31,11 @@ const SignUp = () => {
 
     if (!password) {
       setError("Please enter the password");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
       return;
     }
 
@@ -93,9 +99,15 @@ const SignUp = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
 
+            <PasswordInput 
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder={'Confirm Password'}
+            />    
+
             {error && <p className='text-red-500 text-xs pb-1'>{error}</p>}
             
-            <button type='submit' className='btn-primary'>
+            <button type='submit' className='btn-primary transition-all ease-in-out'>
               Create Account
             </button>
 
