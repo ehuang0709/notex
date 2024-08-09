@@ -63,7 +63,7 @@ export const CodeEditor = ({ codeSnippet, setCodeSnippet, selectedLanguage, setS
       }
         
     } catch (error) {
-      setCodeOutput(`Error: ${error.message}`);
+      setCodeOutput(`Error: ${error.message}.\nYou have exceeded the DAILY quota on code executions.`);
     }
   }
 
