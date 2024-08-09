@@ -37,10 +37,12 @@ const Folder = () => {
   const [folder, setFolder] = useState(null);
   const [allFolders, setAllFolders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [modalWidth, setModalWidth] = useState('40%');
 
   const navigate = useNavigate();
 
   const handleEditNote = (noteDetails) => {
+    setModalWidth('40%');
     setOpenAddEditNoteModal({ isShown: true, data: noteDetails, type: 'edit' });
   };
 
@@ -168,7 +170,8 @@ const Folder = () => {
   };
 
   const closeAddEditNoteModal = () => {
-    setOpenAddEditNoteModal({ isShown: false })
+    setOpenAddEditNoteModal({ isShown: false });
+    setModalWidth('40%');
   }
 
   const handleDeleteNoteClick = (note) => {
@@ -183,6 +186,10 @@ const Folder = () => {
   const cancelDeleteNote = () => {
     setShowConfirmDeleteNoteModal({ isShown: false, note: null });
   }
+
+  const toggleModalWidth = () => {
+    setModalWidth(prevWidth => (prevWidth === '40%' ? '80%' : '40%'));
+  };
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -269,7 +276,7 @@ const Folder = () => {
           },
         }}
         contentLabel=""
-        className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden outline-none transition-all"
+        className={`w-[${modalWidth}] max-h-[80vh] bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden outline-none transition-all overflow-y-auto scrollbar-custom`}
       ><AddEditNotes
           type={openAddEditNoteModal.type}
           noteData={openAddEditNoteModal.data}
@@ -279,6 +286,7 @@ const Folder = () => {
           }}
           getAllNotes={() => getNotesInFolder(folderId)}
           showToastMessage={showToastMessage}
+          toggleModalWidth={toggleModalWidth}
           currentFolderId={folderId}
         />
       </Modal>

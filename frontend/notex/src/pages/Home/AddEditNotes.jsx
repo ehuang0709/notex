@@ -15,6 +15,7 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
   const [selectedFolder, setSelectedFolder] = useState(noteData?.folderId || currentFolderId || null);
   const [isCodeEditorOpen, setisCodeEditorOpen] = useState(false);
   const [codeSnippet, setCodeSnippet] = useState(noteData?.codeSnippet || '');
+  const [selectedLanguage, setSelectedLanguage] = useState(noteData?.selectedLanguage || 'python')
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -39,7 +40,8 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
         content, 
         tags,
         folderId: selectedFolder,
-        codeSnippet
+        codeSnippet,
+        selectedLanguage
       });
 
       if (response.data && response.data.note) {
@@ -62,7 +64,8 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
         content, 
         tags,
         folderId: selectedFolder,
-        codeSnippet
+        codeSnippet,
+        selectedLanguage
       });
 
       if (response.data && response.data.note) {
@@ -168,6 +171,8 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
           <CodeEditor
             codeSnippet={codeSnippet}
             setCodeSnippet={setCodeSnippet}
+            selectedLanguage={selectedLanguage}
+            setSelectedLanguage={setSelectedLanguage}
           />
         </div>
       )}

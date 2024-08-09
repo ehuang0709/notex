@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axiosInstance from '../../utils/axiosInstance';
 import CodeMirror from '@uiw/react-codemirror';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import { python } from '@codemirror/lang-python';
@@ -19,26 +20,48 @@ const languageMap = {
   java: java(),
 };
   
-export const CodeEditor = ({ codeSnippet, setCodeSnippet }) => {
+export const CodeEditor = ({ codeSnippet, setCodeSnippet, selectedLanguage, setSelectedLanguage }) => {
   const [codeOutput, setCodeOutput] = useState('');
-  const [selectedLanguage, setSelectedLanguage] = useState(languages[0].value);
+  const [loadingText, setLoadingText] = useState('Running');
+
+  useEffect(() => {
+    let interval;
+    if (codeOutput === 'Running...') {
+      interval = setInterval(() => {
+        setLoadingText(prev => {
+          if (prev === 'Running...') return 'Running';
+          return prev + '.';
+        });
+      }, 200);
+    } else {
+      setLoadingText('Running');
+    }
+
+    return () => clearInterval(interval);
+  }, [codeOutput]);
   
-  const handleRunCode = () => {
+  const handleRunCode = async () => {
     try {
-      setCodeOutput('');
+      setCodeOutput('Running...');
   
       const code = codeSnippet;
-      const originalConsoleLog = console.log;
-      let outputBuffer = '';
-  
-      console.log = (...args) => {
-      outputBuffer += args.join(' ') + '\n';
-        setCodeOutput(outputBuffer);
-      };
+      const errorIds = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+
+      const response = await axiosInstance.post("/execute-code", {
+        code,
+        language: selectedLanguage,
+      });
+
+      const { stdout, stderr, compile_output, status } = response.data;
+
+      if (errorIds.includes(status.id)) {
+        setCodeOutput(stderr != null ? `Error: ${stderr}` : `Error: ${compile_output}`);
+      } else if (status.id === 3) { // status 3 = accepted
+        setCodeOutput(stdout);
+      } else {
+        setCodeOutput(`An unknown error has occurred. Status ID: ${status.id}`);
+      }
         
-      eval(code);
-  
-      console.log = originalConsoleLog;
     } catch (error) {
       setCodeOutput(`Error: ${error.message}`);
     }
@@ -55,7 +78,7 @@ export const CodeEditor = ({ codeSnippet, setCodeSnippet }) => {
           <LanguageDropdown
             languages={languages}
             selectedLanguage={languages.find(lang => lang.value === selectedLanguage)}
-            setSelectedLanguage={(lang) => setSelectedLanguage(lang.value)}
+            setSelectedLanguage={setSelectedLanguage}
           />
           <button 
             className='relative flex items-center mr-2 px-2 cursor-pointer p-1 rounded hover:bg-neutral-700 transition-all ease-in-out'
@@ -79,18 +102,10 @@ export const CodeEditor = ({ codeSnippet, setCodeSnippet }) => {
           <FaRegCircleCheck className='mr-2 text-green-500'/>
           OUTPUT
         </div>
-        <pre className='bg-darkGray p-2 h-32 text-xs text-neutral-100 text-wrap overflow-y-auto scrollbar-custom'>{codeOutput}</pre>
+        <pre className='bg-darkGray p-2 h-32 text-xs text-neutral-100 text-wrap overflow-y-auto scrollbar-custom'>
+          {codeOutput === 'Running...' ? loadingText : codeOutput}
+        </pre>
       </div>
-    
-        {/* <CodeMirror
-          value={code}
-          theme={darcula}
-          options={{
-            mode: 'javascript',
-            lineNumbers: true
-          }}
-          onChange={(editor, data, value) => setCode(value)}
-        /> */}
 
     </div>
   );

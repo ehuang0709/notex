@@ -9,6 +9,7 @@ const noteSchema = new Schema({
     userId: { type: String, required: true },
     folderId: { type: Schema.Types.ObjectId, ref: 'Folder' },
     codeSnippet: { type: String, default: '' },
+    selectedLanguage: { type: String, default: 'python' },
     isPinned: { type: Boolean, default: false },
     createdOn: { type: Date, default: new Date().getTime() },
 });

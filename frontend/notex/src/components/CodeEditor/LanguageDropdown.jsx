@@ -23,7 +23,7 @@ const LanguageDropdown = ({ languages, selectedLanguage, setSelectedLanguage }) 
   };
   
   const handleSelect = (language) => {
-    setSelectedLanguage(language);
+    setSelectedLanguage(language.value);
     setIsOpen(false);
   };
   

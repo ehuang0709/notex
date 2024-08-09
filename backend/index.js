@@ -9,12 +9,19 @@ const User = require("./models/user.model");
 const Note = require("./models/note.model");
 const Folder = require("./models/folder.model");
 
+const axios = require("axios");
 const express = require("express");
 const cors = require("cors");
 const app = express();
 
 const jwt = require("jsonwebtoken");
 const { authenticateToken } = require("./utilities");
+
+const languageCodeMap = {
+    python: 92,
+    java: 91,
+    javascript: 93,
+}
 
 app.use(express.json());
 
@@ -133,7 +140,7 @@ app.get("/get-user", authenticateToken, async (req, res) => {
 
 // ADD NOTE
 app.post("/add-note", authenticateToken, async (req, res) => {
-    const { title, content, tags, folderId, codeSnippet } = req.body;
+    const { title, content, tags, folderId, codeSnippet, selectedLanguage } = req.body;
     const { user } = req.user;
 
     if (!title) {
@@ -152,6 +159,7 @@ app.post("/add-note", authenticateToken, async (req, res) => {
             folderId: folderId || null,
             userId: user._id,
             codeSnippet: codeSnippet || '',
+            selectedLanguage,
         });
 
         await note.save();
@@ -169,7 +177,7 @@ app.post("/add-note", authenticateToken, async (req, res) => {
 // EDIT NOTE, PUT may be better for editing notes than POST
 app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
     const noteId = req.params.noteId;
-    const { title, content, tags, folderId, isPinned, codeSnippet } = req.body;
+    const { title, content, tags, folderId, isPinned, codeSnippet, selectedLanguage } = req.body;
     const { user } = req.user;
 
     if (!title && !content && !tags && !codeSnippet) {
@@ -189,6 +197,7 @@ app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
         if (folderId) note.folderId = folderId;
         if (isPinned) note.isPinned = isPinned;
         if (codeSnippet) note.codeSnippet = codeSnippet;
+        if (selectedLanguage) note.selectedLanguage = selectedLanguage;
 
         await note.save();
 
@@ -424,48 +433,66 @@ app.get("/get-folder/:folderId", authenticateToken, async (req, res) => {
     } 
 });
 
-// RUN CODE IN CODE EDITOR
-app.post('/run-code', async (req, res) => {
-    const { language, code } = req.body;
+// EXECUTE CODE IN CODE SNIPPET
+app.post("/execute-code", async (req, res) => {
+    const { code, language } = req.body;
 
-    const languageIds = {
-        python: 71,
-        javascript: 63,
-        java: 62,
-    };
-
-    const languageId = languageIds[language];
-
-    if (!languageId) {
-        return res.status(400).json({ error: 'Unsupported language' });
+    if (!code || !language) {
+        return res.status(400).json({ error: true, message: "Code and language are required" });
     }
 
+    const languageId = languageCodeMap[language.toLowerCase()];
+
+    if (!languageId) {
+        return res.status(400).json({ error: true, message: "Unsupported language" });
+    }
+
+    const judge0Endpoint = "https://judge0-ce.p.rapidapi.com/submissions";
+    const judge0ApiKey = process.env.JUDGE0_API_KEY;
+
     try {
-        const response = await axois.post('https://api.judge0.com/submissions', {
-            source_Code: code,
+        const response = await axios.post(judge0Endpoint, {
+            source_code: code,
             language_id: languageId,
         }, {
             headers: {
-                'Content-Type': 'application/json',
+                'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+                'X-RapidAPI-Key': judge0ApiKey,
+                'Content-Type': 'application/json'
             }
         });
 
-        const { token } = response.data;
+        const submissionToken = response.data.token;
 
-        const resultResponse = await axois.get(`https://api.judge0.com/submissions/${token}`, {
-            headers: {
-                'Content-Type': 'application/json',
+        const checkResult = async (token) => {
+            try {
+                const resultResponse = await axios.get(`${judge0Endpoint}/${token}`, {
+                    headers: {
+                        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+                        'X-RapidAPI-Key': judge0ApiKey
+                    }
+                });
+
+                if (resultResponse.data.status.id === 1) {
+                    // Pending status, retry after delay of 2 seconds
+                    setTimeout(() => checkResult(token), 2000); 
+                } else {
+                    res.json(resultResponse.data);
+                }
+            } catch (error) {
+                console.error('Error retrieving result:', error.message); 
+                res.status(500).json({ error: true, message: "Error retrieving code execution result" });
             }
-        });
+        };
 
-        const { stdout, stderr } = resultResponse.data;
+        checkResult(submissionToken);
 
-        return res.json({ output: stdout || stderr });
     } catch (error) {
-        console.error("Failed to run code:", error);
-        return res.status(500).json({ error: "Failed to run code" })
+        console.error('Error executing code:', error); 
+        res.status(500).json({ error: true, message: "Error executing code" });
     }
 });
+
 
 app.listen(8000);
 
