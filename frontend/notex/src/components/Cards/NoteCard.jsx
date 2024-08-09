@@ -15,9 +15,8 @@ const NoteCard = ({ title, date, content, tags, isPinned, onEdit, onDelete, onPi
     return tag;
   };
 
-
   return (
-    <div className='border rounded p-4 bg-white hover:shadow-xl transition-all ease-in-out'>
+    <div className='border rounded p-4 bg-white hover:shadow-xl transition-all ease-in-out flex flex-col h-full'>
       <div className='flex justify-between'>
         <div>
           <h6 className='text-sm font-medium cursor-pointer hover:text-primary transition-all ease-in-out' onClick={onEdit}>{title}</h6>
@@ -27,7 +26,7 @@ const NoteCard = ({ title, date, content, tags, isPinned, onEdit, onDelete, onPi
         <FaRegStar className={`icon-btn hover:text-primary ${isPinned ? 'text-primary' : 'text-slate-300'}`} onClick={onPinNote} />
       </div>
 
-      <p className='text-xs text-slate-600 mt-2'>{content?.slice(0, 60)}</p>
+      <p className='text-xs text-slate-600 mt-2 flex-grow'>{content?.slice(0, 60)}</p>
 
       <div className='flex items-center justify-between mt-2'>
         <div className='text-xs text-slate-500'>
