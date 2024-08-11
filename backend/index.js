@@ -24,9 +24,8 @@ app.use(
     })
 );
 
-app.options('*', cors());
-
-mongoose.connect('mongodb+srv://testuser:testuser@notex.oprtw5n.mongodb.net/?retryWrites=true&w=majority&appName=notex');
+const mongoUrl = process.env.MONGODB_URL;
+mongoose.connect(mongoUrl);
 
 const languageCodeMap = {
     python: 92,
