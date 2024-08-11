@@ -14,19 +14,12 @@ const Folder = require("./models/folder.model");
 
 const app = express();
 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://notex-sage.vercel.app");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    next();
-});
-
 app.use(express.json());
 
 app.use(
     cors({
-        origin: ["https://notex-sage.vercel.app"],
-        methods: ["POST", "GET", "PUT", "DELETE"],
-        allowedHeaders: ["Content-Type", "Authorization"], 
+        origin: ["http://notex-sage.vercel.app"],
+        methods: ["POST", "GET", "PUT", "DELETE"], 
         credentials: true
     })
 );
@@ -504,8 +497,6 @@ app.post("/execute-code", async (req, res) => {
 });
 
 
-app.listen(8000, () => {
-    console.log("Server is running")
-});
+app.listen(8000);
 
 module.exports = app;
