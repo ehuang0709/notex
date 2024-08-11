@@ -504,6 +504,8 @@ app.post("/execute-code", async (req, res) => {
 });
 
 
-app.listen(8000);
+app.listen(8000, () => {
+    console.log("Server is running")
+});
 
 module.exports = app;
