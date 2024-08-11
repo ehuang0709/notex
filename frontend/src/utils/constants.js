@@ -1,1 +1,1 @@
-export const BASE_URL = 'http://notex-api-six.vercel.app'
+export const BASE_URL = 'https://notex-api-six.vercel.app'
