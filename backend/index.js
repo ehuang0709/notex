@@ -27,7 +27,7 @@ app.use(express.json());
 
 app.use(
     cors({
-        origin: [""],
+        origin: ["https://notex-sage.vercel.app/"],
         methods: ["POST", "GET", "PUT", "DELETE"], 
         credentials: true
     })
