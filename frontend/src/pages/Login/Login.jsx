@@ -45,8 +45,6 @@ const Login = () => {
       const response = await axiosInstance.post("/login", {
         email: email,
         password: password,
-      }, {
-        withCredentials: true
       });
 
       // Handle successful login response
