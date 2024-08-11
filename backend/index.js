@@ -15,9 +15,8 @@ const Folder = require("./models/folder.model");
 const app = express();
 
 app.use((req, res, next) => {
-    console.log(`Request Method: ${req.method}`);
-    console.log(`Request URL: ${req.url}`);
-    console.log('Request Headers:', req.headers);
+    res.header("Access-Control-Allow-Origin", "https://notex-sage.vercel.app");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     next();
 });
 
