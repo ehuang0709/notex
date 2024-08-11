@@ -2,26 +2,17 @@ require("dotenv").config();
 
 // const config = require("./config.json");
 const mongoose = require("mongoose");
-
-mongoose.connect('mongodb+srv://testuser:testuser@notex.oprtw5n.mongodb.net/?retryWrites=true&w=majority&appName=notex');
+const axios = require("axios");
+const express = require("express");
+const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const { authenticateToken } = require("./utilities");
 
 const User = require("./models/user.model");
 const Note = require("./models/note.model");
 const Folder = require("./models/folder.model");
 
-const axios = require("axios");
-const express = require("express");
-const cors = require("cors");
 const app = express();
-
-const jwt = require("jsonwebtoken");
-const { authenticateToken } = require("./utilities");
-
-const languageCodeMap = {
-    python: 92,
-    java: 91,
-    javascript: 93,
-}
 
 app.use(express.json());
 
@@ -32,6 +23,16 @@ app.use(
         credentials: true
     })
 );
+
+app.options('*', cors());
+
+mongoose.connect('mongodb+srv://testuser:testuser@notex.oprtw5n.mongodb.net/?retryWrites=true&w=majority&appName=notex');
+
+const languageCodeMap = {
+    python: 92,
+    java: 91,
+    javascript: 93,
+}
 
 app.get("/", (req, res) => {
     res.json({ data: "hello" });
