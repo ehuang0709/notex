@@ -1,9 +1,9 @@
 require("dotenv").config();
 
-const config = require("./config.json");
+// const config = require("./config.json");
 const mongoose = require("mongoose");
 
-mongoose.connect(config.connectionString);
+mongoose.connect('mongodb+srv://testuser:testuser@notex.oprtw5n.mongodb.net/?retryWrites=true&w=majority&appName=notex');
 
 const User = require("./models/user.model");
 const Note = require("./models/note.model");
@@ -27,7 +27,9 @@ app.use(express.json());
 
 app.use(
     cors({
-        origin: "*",
+        origin: ["https://deploy-mern-1whq.vercel.app"],
+        methods: ["POST", "GET", "PUT", "DELETE"], 
+        credentials: true
     })
 );
 
