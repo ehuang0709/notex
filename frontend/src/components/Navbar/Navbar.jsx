@@ -16,7 +16,7 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
   const onLogout = () => {
     localStorage.clear();
     setIsLoggedIn(false);
-    window.location.href = '/login';
+    window.location.href = '/login/';
   };
 
   const handleSearch = () => {
