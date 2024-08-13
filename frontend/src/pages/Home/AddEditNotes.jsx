@@ -107,7 +107,7 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
 
   return (
     <div className={`relative ${isCodeEditorOpen ? 'flex' : ''}`}>
-      <div className={`${isCodeEditorOpen ? 'w-[48%]' : 'w-full'} transition-all`}>
+      <div className={`${isCodeEditorOpen ? 'w-[48%]' : 'w-auto'} transition-all`}>
         <button 
           className='w-10 h-10 rounded-full flex items-center justify-center absolute -top-3 -right-3 hover:bg-slate-50' 
           onClick={onClose}

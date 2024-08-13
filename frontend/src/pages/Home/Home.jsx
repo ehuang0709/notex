@@ -363,7 +363,7 @@ const Home = () => {
           },
         }}
         contentLabel=""
-        className={`w-[${modalWidth}] max-h-[80vh] bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden outline-none transition-all overflow-y-auto scrollbar-custom`}
+        className={`${modalWidth === '40%' ? 'w-[40%]' : 'w-[80%]'} max-h-[80vh] bg-white rounded-md mx-auto mt-14 p-5 overflow-hidden outline-none transition-all overflow-y-auto scrollbar-custom`}
       >
         <AddEditNotes
           type={openAddEditNoteModal.type}
