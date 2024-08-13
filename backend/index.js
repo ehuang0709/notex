@@ -16,20 +16,20 @@ const app = express();
 
 app.use(express.json());
 
-// app.use(
-//     cors({
-//         origin: ["https://notex-sage.vercel.app"],
-//         methods: ["POST", "GET", "PUT", "DELETE"], 
-//         credentials: true
-//     })
-// );
-
-// FOR TESTING LOCALLY
 app.use(
     cors({
-        origin: "*",
+        origin: ["https://notex-sage.vercel.app"],
+        methods: ["POST", "GET", "PUT", "DELETE"], 
+        credentials: true
     })
 );
+
+// FOR TESTING LOCALLY
+// app.use(
+//     cors({
+//         origin: "*",
+//     })
+// );
 
 const mongoUrl = process.env.MONGODB_URL;
 mongoose.connect(mongoUrl);
