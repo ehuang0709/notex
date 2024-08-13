@@ -41,6 +41,11 @@ export const CodeEditor = ({ codeSnippet, setCodeSnippet, selectedLanguage, setS
   }, [codeOutput]);
   
   const handleRunCode = async () => {
+    if (!codeSnippet.trim()) {
+      setCodeOutput("Error: Code snippet is empty.");
+      return;
+    }
+
     try {
       setCodeOutput('Running...');
   
@@ -91,7 +96,7 @@ export const CodeEditor = ({ codeSnippet, setCodeSnippet, selectedLanguage, setS
       </div>
       <CodeMirror
         value={codeSnippet}
-        height="310px"
+        height="343px"
         theme={vscodeDark}
         extensions={[languageMap[selectedLanguage]]}
         onChange={(value) => setCodeSnippet(value)}
