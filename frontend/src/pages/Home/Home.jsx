@@ -85,7 +85,7 @@ const Home = () => {
       }
     } catch (error) {
       if (error.response.status === 401) {
-        navigate("/login");
+        navigate("/login/");
       }
     }
   };
