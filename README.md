@@ -1,16 +1,15 @@
-# [NOTEX: Notes-Taking App Focused Around Coders](https://notexapp.netlify.app/)
+# [NOTEX: Notes-Taking App Focused Around Coders](https://notex-sage.vercel.app/)
 
 ## Description
-**NOTEX** is a comprehensive note taking and to-do application focused around coders, featuring an expandable CodeMirror code editor. It allows users to create, edit, and manage notes with support for code snippets. The app includes functionalities for adding tags, organizing notes into folders, searching for notes, and running code snippets inside the comfort of your note.
+**NOTEX** is a comprehensive note-taking and to-do application focused around coders, featuring an expandable CodeMirror code editor. It allows users to create, edit, and manage notes with support for code snippets. The app includes functionalities for adding tags, organizing notes into folders, searching for notes, and running code snippets inside the comfort of your note.
 
-**Check it out here**: https://notexapp.netlify.app/
+**Check it out here**: https://notex-sage.vercel.app/
 
 ## Features
 - **Note Management**: Create, edit, delete, and organize notes with tags and folders.
 - **Search Functionality**: Search for notes by title or title.
 - **CodeMirror Integration**: An embedded code editor with support for multiple programming languages, including Python, Java, and JavaScript.
 - **Code Execution**: Run code snippets and view outputs directly within the note.
-
 
 ## Technologies Used
 - **Frontend**:
@@ -22,6 +21,12 @@
     - [**MongoDB**](https://www.mongodb.com/)
 - **Tools**:
     - [**Postman**](https://www.postman.com/)
+
+## Showcase 
+![create_folder_gif-ezgif com-crop](https://github.com/user-attachments/assets/f9d169f8-4e82-49d4-9750-a1861147b620)
+![create_note_gif](https://github.com/user-attachments/assets/f47ab85b-2d07-46ff-bbe6-9f1a69ebad86)
+![show_note_in_folder_gif](https://github.com/user-attachments/assets/f2398327-5920-4eaa-9297-d886539e67d8)
+![execute_code_gif](https://github.com/user-attachments/assets/f387a419-5e03-46f6-a561-55cc3268c717)
 
 <!-- ## Contributing
 Please feel free to [<u>open an issue</u>](https://github.com/ehuang0709/notex/issues/new) for any bugs or new feature requests. We appreciate all forms of contribution to the development of NOTEX. -->
