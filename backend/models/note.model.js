@@ -6,7 +6,7 @@ const noteSchema = new Schema({
     title: { type: String, required: true },
     content: { type: String, required: true },
     tags: { type: [String], default: [] },
-    userId: { type: String, required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     folderId: { type: Schema.Types.ObjectId, ref: 'Folder' },
     codeSnippet: { type: String, default: '' },
     selectedLanguage: { type: String, default: 'python' },
