@@ -64,7 +64,7 @@ const FolderCard = ({ folder, onEdit, onDelete, onDoubleClick }) => {
           <div
             ref={dropdownRef}
             className={`absolute right-0 mt-2 w-36 bg-white border rounded shadow-lg overflow-hidden transition-all duration-500 ease-in-out ${
-              isDropdownOpen ? 'h-auto' : 'h-0'
+              isDropdownOpen ? 'h-auto' : 'h-0 border-none'
             }`}
             style={{
               maxHeight: isDropdownOpen ? '200px' : '0px',

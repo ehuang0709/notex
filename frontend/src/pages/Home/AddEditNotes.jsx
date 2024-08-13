@@ -167,7 +167,7 @@ const AddEditNotes = ({ noteData = {}, type, getAllNotes, onClose, showToastMess
       </div>
 
       {isCodeEditorOpen && (
-        <div className={`mt-16 ml-8 rounded transition-transform duration-300 ease-in-out ${isCodeEditorOpen ? 'w-[48%]' : 'w-0'} overflow-hidden`}>
+        <div className={`mt-8 ml-8 rounded transition-transform duration-300 ease-in-out ${isCodeEditorOpen ? 'w-[48%]' : 'w-0'} overflow-hidden`}>
           <CodeEditor
             codeSnippet={codeSnippet}
             setCodeSnippet={setCodeSnippet}
