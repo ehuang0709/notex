@@ -23,7 +23,7 @@
     - [**Postman**](https://www.postman.com/)
 
 ## Showcase 
-![create_folder_gif](https://github.com/user-attachments/assets/4677522e-4523-4d1b-af63-271d388b6ac1)
+![create_folder_gif-ezgif com-crop](https://github.com/user-attachments/assets/f9d169f8-4e82-49d4-9750-a1861147b620)
 ![create_note_gif](https://github.com/user-attachments/assets/f47ab85b-2d07-46ff-bbe6-9f1a69ebad86)
 ![show_note_in_folder_gif](https://github.com/user-attachments/assets/f2398327-5920-4eaa-9297-d886539e67d8)
 ![execute_code_gif](https://github.com/user-attachments/assets/f387a419-5e03-46f6-a561-55cc3268c717)
